@@ -311,6 +311,222 @@ function initializeLocalStorageGrievances() {
                 created_at: formatTime(new Date(now.getTime() - 21600000)),
                 escalated: false,
                 escalation_time: formatTime(new Date(now.getTime() - 21540000))
+            },
+            {
+                ticket_id: "TKT-20260701-0011",
+                text: "Gomti Nagar Patrakar Puram chauraha ke paas kuch ladke shaam ko bullet se stunting karte hain aur wahan khadi ladkiyon par comments pass karte hain. Please patrolling badhayein.",
+                language: "Hinglish",
+                category: "Women Safety",
+                urgency_score: 8,
+                sentiment: "Negative",
+                district: "Lucknow",
+                assigned_station_id: 3, // Gomti Nagar
+                station_name: "Gomti Nagar",
+                sho_name: "Inspector Pramod Mishra",
+                station_phone: "+91 9454403803",
+                status: "Pending",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 900000)), message: "Grievance registered. Routed automatically by UP Police AI." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 900000)),
+                escalated: true,
+                escalation_time: formatTime(new Date(now.getTime() - 840000))
+            },
+            {
+                ticket_id: "TKT-20260701-0012",
+                text: "My uncle got a call from an unknown number claiming to be from Bank of Baroda. They asked for card details for KYC verification, and immediately 35,000 INR was debited from his account. Please register a complaint.",
+                language: "English",
+                category: "Cyber Fraud",
+                urgency_score: 7,
+                sentiment: "Negative",
+                district: "Varanasi",
+                assigned_station_id: 7, // Lanka
+                station_name: "Lanka",
+                sho_name: "Inspector Ashutosh Tiwari",
+                station_phone: "+91 9454404002",
+                status: "Under Investigation",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 10800000)), message: "Grievance registered. Routed automatically by UP Police AI." },
+                    { time: formatTime(new Date(now.getTime() - 9000000)), message: "[Inspector Ashutosh Tiwari] Registered Case under Cyber Act. Sent details to Cyber Cell." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 10800000)),
+                escalated: false,
+                escalation_time: formatTime(new Date(now.getTime() - 10740000))
+            },
+            {
+                ticket_id: "TKT-20260701-0013",
+                text: "हरीपर्वत थाना क्षेत्र के अंतर्गत संजय पैलेस में हमारी पैतृक दुकान की पिछली दीवार को पड़ोसी दुकानदार रात के समय जबरन तोड़कर अपना रास्ता निकालने की कोशिश कर रहा है। रोकने पर हाथापाई करता है।",
+                language: "Hindi",
+                category: "Land Dispute",
+                urgency_score: 6,
+                sentiment: "Negative",
+                district: "Agra",
+                assigned_station_id: 9, // Hariparwat
+                station_name: "Hariparwat",
+                sho_name: "Inspector V.K. Singh",
+                station_phone: "+91 9454404102",
+                status: "Pending",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 2700000)), message: "Grievance registered. Routed automatically by UP Police AI." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 2700000)),
+                escalated: true,
+                escalation_time: formatTime(new Date(now.getTime() - 2640000))
+            },
+            {
+                ticket_id: "TKT-20260701-0014",
+                text: "Kakadeo Coaching area se kal dopahar me mera mobile (Redmi Note 12) kisi ne pocket se nikal liya jab main bus me chadha tha. Location Kakadeo bypass ke paas ki hai.",
+                language: "Hinglish",
+                category: "Theft/Robbery",
+                urgency_score: 5,
+                sentiment: "Negative",
+                district: "Kanpur",
+                assigned_station_id: 5, // Kakadeo
+                station_name: "Kakadeo",
+                sho_name: "Inspector Sanjay Yadav",
+                station_phone: "+91 9454403902",
+                status: "Resolved",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 86400000)), message: "Grievance registered. Routed automatically by UP Police AI." },
+                    { time: formatTime(new Date(now.getTime() - 64800000)), message: "[Inspector Sanjay Yadav] Police tracked the IMEI location. Device found with local dealer." },
+                    { time: formatTime(new Date(now.getTime() - 43200000)), message: "[Inspector Sanjay Yadav] Mobile recovered and handed back to the complainant. Case closed." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 86400000)),
+                escalated: false,
+                escalation_time: formatTime(new Date(now.getTime() - 86340000))
+            },
+            {
+                ticket_id: "TKT-20260701-0015",
+                text: "हजरतगंज चौराहे के पास स्थित एक रेस्टोरेंट में कल रात कुछ नशेड़ी युवकों ने बिल मांगने पर वेटर के साथ गंभीर मारपीट की और काउंटर पर तोड़फोड़ की। सीसीटीवी फुटेज उपलब्ध है।",
+                language: "Hindi",
+                category: "Assault/Violence",
+                urgency_score: 9,
+                sentiment: "Negative",
+                district: "Lucknow",
+                assigned_station_id: 1, // Hazratganj
+                station_name: "Hazratganj",
+                sho_name: "Inspector Akhilesh Singh",
+                station_phone: "+91 9454403801",
+                status: "Under Investigation",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 36000000)), message: "Grievance registered. Routed automatically by UP Police AI." },
+                    { time: formatTime(new Date(now.getTime() - 32400000)), message: "[Inspector Akhilesh Singh] Dispatched team. Took restaurant CCTV footage into custody." },
+                    { time: formatTime(new Date(now.getTime() - 28800000)), message: "[Inspector Akhilesh Singh] Two suspects identified. Police raids are underway." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 36000000)),
+                escalated: false,
+                escalation_time: formatTime(new Date(now.getTime() - 35940000))
+            },
+            {
+                ticket_id: "TKT-20260701-0016",
+                text: "सिगरा क्षेत्र में नए किराएदारों के पुलिस वेरिफिकेशन के लिए कौन-कौन से दस्तावेजों की आवश्यकता होती है और इसका ऑनलाइन आवेदन कैसे किया जाता है?",
+                language: "Hindi",
+                category: "General Inquiry",
+                urgency_score: 3,
+                sentiment: "Neutral",
+                district: "Varanasi",
+                assigned_station_id: 6, // Sigra
+                station_name: "Sigra",
+                sho_name: "Inspector Vinay Verma",
+                station_phone: "+91 9454404001",
+                status: "Resolved",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 50400000)), message: "Grievance registered. Routed automatically by UP Police AI." },
+                    { time: formatTime(new Date(now.getTime() - 43200000)), message: "[Inspector Vinay Verma] Provided step-by-step instructions for UP Cop App tenant verification." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 50400000)),
+                escalated: false,
+                escalation_time: formatTime(new Date(now.getTime() - 50340000))
+            },
+            {
+                ticket_id: "TKT-20260701-0017",
+                text: "Yesterday evening, while visiting the Taj Mahal east gate, a pickpocket stole my handbag containing my passport, wallet with 500 USD, and keys. Tajganj area.",
+                language: "English",
+                category: "Theft/Robbery",
+                urgency_score: 7,
+                sentiment: "Negative",
+                district: "Agra",
+                assigned_station_id: 8, // Tajganj
+                station_name: "Tajganj",
+                sho_name: "Inspector Shailendra Giri",
+                station_phone: "+91 9454404101",
+                status: "Pending",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 300000)), message: "Grievance registered. Routed automatically by UP Police AI." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 300000)),
+                escalated: true,
+                escalation_time: formatTime(new Date(now.getTime() - 240000))
+            },
+            {
+                ticket_id: "TKT-20260701-0018",
+                text: "Aliganj resident. Maine ek OLX pe second hand laptop ka advertisement dekha tha. Seller ne advance delivery charges ke naam par 12,000 transfer karwa liye aur ab uska phone switched off aa raha hai.",
+                language: "Hinglish",
+                category: "Cyber Fraud",
+                urgency_score: 7,
+                sentiment: "Negative",
+                district: "Lucknow",
+                assigned_station_id: 2, // Aliganj
+                station_name: "Aliganj",
+                sho_name: "Inspector Rajesh Kumar",
+                station_phone: "+91 9454403802",
+                status: "Pending",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 1800000)), message: "Grievance registered. Routed automatically by UP Police AI." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 1800000)),
+                escalated: true,
+                escalation_time: formatTime(new Date(now.getTime() - 1740000))
+            },
+            {
+                ticket_id: "TKT-20260701-0019",
+                text: "कल्याणपुर में यूनिवर्सिटी रोड पर रात 8 बजे के बाद स्ट्रीट लाइट्स न जलने के कारण अंधेरा रहता है, जिससे coaching से लौटने वाली छात्राओं को असुरक्षित महसूस होता है। असामाजिक तत्व वहां जमा रहते हैं।",
+                language: "Hindi",
+                category: "Women Safety",
+                urgency_score: 8,
+                sentiment: "Negative",
+                district: "Kanpur",
+                assigned_station_id: 4, // Kalyanpur
+                station_name: "Kalyanpur",
+                sho_name: "Inspector Devendra Singh",
+                station_phone: "+91 9454403901",
+                status: "Pending",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 3000000)), message: "Grievance registered. Routed automatically by UP Police AI." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 3000000)),
+                escalated: true,
+                escalation_time: formatTime(new Date(now.getTime() - 2940000))
+            },
+            {
+                ticket_id: "TKT-20260701-0020",
+                text: "CONGRATULATIONS! You have been selected for a free $1000 Amazon gift card. Click this link immediately to claim: www.freegiftcard-scam.com",
+                language: "English",
+                category: "General Inquiry",
+                urgency_score: 1,
+                sentiment: "Neutral",
+                district: "Kanpur",
+                assigned_station_id: 4, // Kalyanpur
+                station_name: "Kalyanpur",
+                sho_name: "Inspector Devendra Singh",
+                station_phone: "+91 9454403901",
+                status: "Pending",
+                is_spam: true,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 79200000)), message: "Grievance registered. AI filtered as SPAM due to lottery scam patterns." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 79200000)),
+                escalated: false,
+                escalation_time: formatTime(new Date(now.getTime() - 79140000))
             }
         ];
         

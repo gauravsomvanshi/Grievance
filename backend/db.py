@@ -131,6 +131,62 @@ def init_db():
             {"time": (now - timedelta(hours=2, minutes=46)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Suspect apprehended, wallet recovered with documents. Wallet handed back to owner."}
         ])
 
+        # 11. Women Safety (Pending, Gomti Nagar)
+        diary_11 = json.dumps([
+            {"time": (now - timedelta(minutes=15)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."}
+        ])
+
+        # 12. Cyber Fraud (Under Investigation, Lanka)
+        diary_12 = json.dumps([
+            {"time": (now - timedelta(hours=3)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."},
+            {"time": (now - timedelta(hours=2, minutes=30)).strftime("%Y-%m-%d %H:%M:%S"), "message": "[Inspector Ashutosh Tiwari] Registered Case under Cyber Act. Sent details to Cyber Cell."}
+        ])
+
+        # 13. Land Dispute (Pending, Hariparwat)
+        diary_13 = json.dumps([
+            {"time": (now - timedelta(minutes=45)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."}
+        ])
+
+        # 14. Theft (Resolved, Kakadeo)
+        diary_14 = json.dumps([
+            {"time": (now - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."},
+            {"time": (now - timedelta(hours=18)).strftime("%Y-%m-%d %H:%M:%S"), "message": "[Inspector Sanjay Yadav] Police tracked the IMEI location. Device found with local dealer."},
+            {"time": (now - timedelta(hours=12)).strftime("%Y-%m-%d %H:%M:%S"), "message": "[Inspector Sanjay Yadav] Mobile recovered and handed back to the complainant. Case closed."}
+        ])
+
+        # 15. Assault/Violence (Under Investigation, Hazratganj)
+        diary_15 = json.dumps([
+            {"time": (now - timedelta(hours=10)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."},
+            {"time": (now - timedelta(hours=9)).strftime("%Y-%m-%d %H:%M:%S"), "message": "[Inspector Akhilesh Singh] Dispatched team. Took restaurant CCTV footage into custody."},
+            {"time": (now - timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S"), "message": "[Inspector Akhilesh Singh] Two suspects identified. Police raids are underway."}
+        ])
+
+        # 16. General Inquiry (Resolved, Sigra)
+        diary_16 = json.dumps([
+            {"time": (now - timedelta(hours=14)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."},
+            {"time": (now - timedelta(hours=12)).strftime("%Y-%m-%d %H:%M:%S"), "message": "[Inspector Vinay Verma] Provided step-by-step instructions for UP Cop App tenant verification."}
+        ])
+
+        # 17. Theft (Pending, Tajganj)
+        diary_17 = json.dumps([
+            {"time": (now - timedelta(minutes=5)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."}
+        ])
+
+        # 18. Cyber Fraud (Pending, Aliganj)
+        diary_18 = json.dumps([
+            {"time": (now - timedelta(minutes=30)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."}
+        ])
+
+        # 19. Women Safety (Pending, Kalyanpur)
+        diary_19 = json.dumps([
+            {"time": (now - timedelta(minutes=50)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."}
+        ])
+
+        # 20. Spam (Pending, Kalyanpur)
+        diary_20 = json.dumps([
+            {"time": (now - timedelta(hours=22)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. AI filtered as SPAM due to lottery scam patterns."}
+        ])
+
         mock_grievances = [
             (
                 "TKT-20260701-0001",
@@ -291,6 +347,166 @@ def init_db():
                 (now - timedelta(hours=6)).strftime("%Y-%m-%d %H:%M:%S"),
                 0,
                 (now - timedelta(hours=6) + timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0011",
+                "Gomti Nagar Patrakar Puram chauraha ke paas kuch ladke shaam ko bullet se stunting karte hain aur wahan khadi ladkiyon par comments pass karte hain. Please patrolling badhayein.",
+                "Hinglish",
+                "Women Safety",
+                8,
+                "Negative",
+                "Lucknow",
+                3, # Gomti Nagar
+                "Pending",
+                0,
+                diary_11,
+                (now - timedelta(minutes=15)).strftime("%Y-%m-%d %H:%M:%S"),
+                1, # Escalated
+                (now - timedelta(minutes=14)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0012",
+                "My uncle got a call from an unknown number claiming to be from Bank of Baroda. They asked for card details for KYC verification, and immediately 35,000 INR was debited from his account. Please register a complaint.",
+                "English",
+                "Cyber Fraud",
+                7,
+                "Negative",
+                "Varanasi",
+                7, # Lanka
+                "Under Investigation",
+                0,
+                diary_12,
+                (now - timedelta(hours=3)).strftime("%Y-%m-%d %H:%M:%S"),
+                0,
+                (now - timedelta(hours=3) + timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0013",
+                "हरीपर्वत थाना क्षेत्र के अंतर्गत संजय पैलेस में हमारी पैतृक दुकान की पिछली दीवार को पड़ोसी दुकानदार रात के समय जबरन तोड़कर अपना रास्ता निकालने की कोशिश कर रहा है। रोकने पर हाथापाई करता है।",
+                "Hindi",
+                "Land Dispute",
+                6,
+                "Negative",
+                "Agra",
+                9, # Hariparwat
+                "Pending",
+                0,
+                diary_13,
+                (now - timedelta(minutes=45)).strftime("%Y-%m-%d %H:%M:%S"),
+                1, # Escalated
+                (now - timedelta(minutes=44)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0014",
+                "Kakadeo Coaching area se kal dopahar me mera mobile (Redmi Note 12) kisi ne pocket se nikal liya jab main bus me chadha tha. Location Kakadeo bypass ke paas ki hai.",
+                "Hinglish",
+                "Theft/Robbery",
+                5,
+                "Negative",
+                "Kanpur",
+                5, # Kakadeo
+                "Resolved",
+                0,
+                diary_14,
+                (now - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S"),
+                0,
+                (now - timedelta(days=1) + timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0015",
+                "हजरतगंज चौराहे के पास स्थित एक रेस्टोरेंट में कल रात कुछ नशेड़ी युवकों ने बिल मांगने पर वेटर के साथ गंभीर मारपीट की और काउंटर पर तोड़फोड़ की। सीसीटीवी फुटेज उपलब्ध है।",
+                "Hindi",
+                "Assault/Violence",
+                9,
+                "Negative",
+                "Lucknow",
+                1, # Hazratganj
+                "Under Investigation",
+                0,
+                diary_15,
+                (now - timedelta(hours=10)).strftime("%Y-%m-%d %H:%M:%S"),
+                0,
+                (now - timedelta(hours=10) + timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0016",
+                "सिगरा क्षेत्र में नए किराएदारों के पुलिस वेरिफिकेशन के लिए कौन-कौन से दस्तावेजों की आवश्यकता होती है और इसका ऑनलाइन आवेदन कैसे किया जाता है?",
+                "Hindi",
+                "General Inquiry",
+                3,
+                "Neutral",
+                "Varanasi",
+                6, # Sigra
+                "Resolved",
+                0,
+                diary_16,
+                (now - timedelta(hours=14)).strftime("%Y-%m-%d %H:%M:%S"),
+                0,
+                (now - timedelta(hours=14) + timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0017",
+                "Yesterday evening, while visiting the Taj Mahal east gate, a pickpocket stole my handbag containing my passport, wallet with 500 USD, and keys. Tajganj area.",
+                "English",
+                "Theft/Robbery",
+                7,
+                "Negative",
+                "Agra",
+                8, # Tajganj
+                "Pending",
+                0,
+                diary_17,
+                (now - timedelta(minutes=5)).strftime("%Y-%m-%d %H:%M:%S"),
+                1, # Escalated
+                (now - timedelta(minutes=4)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0018",
+                "Aliganj resident. Maine ek OLX pe second hand laptop ka advertisement dekha tha. Seller ne advance delivery charges ke naam par 12,000 transfer karwa liye aur ab uska phone switched off aa raha hai.",
+                "Hinglish",
+                "Cyber Fraud",
+                7,
+                "Negative",
+                "Lucknow",
+                2, # Aliganj
+                "Pending",
+                0,
+                diary_18,
+                (now - timedelta(minutes=30)).strftime("%Y-%m-%d %H:%M:%S"),
+                1, # Escalated
+                (now - timedelta(minutes=29)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0019",
+                "कल्याणपुर में यूनिवर्सिटी रोड पर रात 8 बजे के बाद स्ट्रीट लाइट्स न जलने के कारण अंधेरा रहता है, जिससे coaching से लौटने वाली छात्राओं को असुरक्षित महसूस होता है। असामाजिक तत्व वहां जमा रहते हैं।",
+                "Hindi",
+                "Women Safety",
+                8,
+                "Negative",
+                "Kanpur",
+                4, # Kalyanpur
+                "Pending",
+                0,
+                diary_19,
+                (now - timedelta(minutes=50)).strftime("%Y-%m-%d %H:%M:%S"),
+                1, # Escalated
+                (now - timedelta(minutes=49)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0020",
+                "CONGRATULATIONS! You have been selected for a free $1000 Amazon gift card. Click this link immediately to claim: www.freegiftcard-scam.com",
+                "English",
+                "General Inquiry",
+                1,
+                "Neutral",
+                "Kanpur",
+                4, # Kalyanpur
+                "Pending",
+                1, # Spam
+                diary_20,
+                (now - timedelta(hours=22)).strftime("%Y-%m-%d %H:%M:%S"),
+                0,
+                (now - timedelta(hours=22) + timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
             )
         ]
         

@@ -121,8 +121,21 @@ def extract_entities(text):
                 detected_station = station
                 break
                 
-    # Fallback to map station based on district if not explicitly mentioned
-    if not detected_station:
+    # Map district if station is explicitly detected, otherwise fallback to map station based on district
+    if detected_station:
+        station_to_district = {
+            "Hazratganj": "Lucknow",
+            "Aliganj": "Lucknow",
+            "Gomti Nagar": "Lucknow",
+            "Kalyanpur": "Kanpur",
+            "Kakadeo": "Kanpur",
+            "Sigra": "Varanasi",
+            "Lanka": "Varanasi",
+            "Tajganj": "Agra",
+            "Hariparwat": "Agra"
+        }
+        detected_district = station_to_district.get(detected_station, detected_district)
+    else:
         if detected_district == "Lucknow":
             detected_station = "Hazratganj"
         elif detected_district == "Kanpur":
