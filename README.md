@@ -39,10 +39,9 @@ Grievance/
 │   ├── db.py                 # SQLite configuration & pre-seeded records
 │   ├── main.py               # FastAPI application server
 │   └── nlp_engine.py         # Bilingual NLP parser module
-├── frontend/
-│   ├── app.js                # Frontend SPA controller and SLA monitors
-│   ├── index.html            # Citizen & Commander portals structure
-│   └── styles.css            # Dark mode glassmorphism UI styles
+├── app.js                    # Frontend SPA controller and SLA monitors (Dual-Mode: Local API & Offline Mock)
+├── index.html                # Citizen & Commander portals structure (GitHub Pages Entry Point)
+├── styles.css                # Dark mode glassmorphism UI styles
 └── README.md                 # Setup instructions
 ```
 
@@ -52,9 +51,9 @@ Grievance/
 
 ### Prerequisites
 
-Ensure you have **Python 3.8+** installed on your system.
+Ensure you have **Python 3.8+** installed on your system if you wish to run the local backend server. (Note: If you do not run the Python server, the system automatically detects this and runs in **Offline Demo Mode** using local browser storage).
 
-### 1. Setup Backend & Run Server
+### 1. Setup Backend & Run Server (Optional)
 
 First, install the required dependencies:
 ```bash
@@ -77,12 +76,12 @@ The backend API server will run at `http://127.0.0.1:8000`.
 
 Since the frontend is built using standard static assets, you can launch it in one of two ways:
 
-*   **Option A**: Simply double-click and open `frontend/index.html` in any web browser (Chrome/Edge/Firefox).
+*   **Option A**: Simply double-click and open `index.html` in the root folder of the project in any web browser.
 *   **Option B**: Start a simple HTTP server from the project directory:
     ```bash
     python -m http.server 8080
     ```
-    Then navigate to `http://localhost:8080/frontend/` in your browser.
+    Then navigate to `http://localhost:8080/` in your browser.
 
 ---
 
