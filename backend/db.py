@@ -101,6 +101,36 @@ def init_db():
             {"time": (now - timedelta(hours=12)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. AI filtered as SPAM due to duplicate nonsense text."}
         ])
 
+        # 6. Assault/Violence complaint (Pending, Tajganj)
+        diary_6 = json.dumps([
+            {"time": (now - timedelta(minutes=8)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."}
+        ])
+
+        # 7. Land Dispute (Under Investigation, Kakadeo)
+        diary_7 = json.dumps([
+            {"time": (now - timedelta(hours=4)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."},
+            {"time": (now - timedelta(hours=3, minutes=20)).strftime("%Y-%m-%d %H:%M:%S"), "message": "SHO Kakadeo patrol team inspected the site. Halted work. Investigating registry documents."}
+        ])
+
+        # 8. Cyber Fraud (Resolved, Hariparwat)
+        diary_8 = json.dumps([
+            {"time": (now - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."},
+            {"time": (now - timedelta(hours=19)).strftime("%Y-%m-%d %H:%M:%S"), "message": "SHO Hariparwat raised dispute with merchant gateway. Card blocked."},
+            {"time": (now - timedelta(hours=14)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Cyber cell traced the gateway, money refunded to victim account. Case closed."}
+        ])
+
+        # 9. Women Safety (Pending, Lanka)
+        diary_9 = json.dumps([
+            {"time": (now - timedelta(minutes=15)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."}
+        ])
+
+        # 10. Theft (Resolved, Hazratganj)
+        diary_10 = json.dumps([
+            {"time": (now - timedelta(hours=6)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Grievance registered. Routed automatically by UP Police AI."},
+            {"time": (now - timedelta(hours=5)).strftime("%Y-%m-%d %H:%M:%S"), "message": "SHO Hazratganj traced suspect using market CCTV footage."},
+            {"time": (now - timedelta(hours=2, minutes=46)).strftime("%Y-%m-%d %H:%M:%S"), "message": "Suspect apprehended, wallet recovered with documents. Wallet handed back to owner."}
+        ])
+
         mock_grievances = [
             (
                 "TKT-20260701-0001",
@@ -182,6 +212,86 @@ def init_db():
                 0,
                 (now - timedelta(hours=12) + timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
             ),
+            (
+                "TKT-20260701-0006",
+                "Tajganj market me parking space ko lekar do paksho me lathi danda chal gaya hai. Tension badh rahi hai, turant police force bhejein.",
+                "Hinglish",
+                "Assault/Violence",
+                10,
+                "Negative",
+                "Agra",
+                8, # Tajganj
+                "Pending",
+                0,
+                diary_6,
+                (now - timedelta(minutes=8)).strftime("%Y-%m-%d %H:%M:%S"),
+                1, # Escalated
+                (now - timedelta(minutes=7)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0007",
+                "काकादेव में नवीन मार्केट के पास हमारे कमर्शियल प्लॉट पर कल रात कुछ असामाजिक तत्वों ने जबरन कब्जा कर लिया है और विरोध करने पर जान से मारने की धमकी दी है।",
+                "Hindi",
+                "Land Dispute",
+                8,
+                "Negative",
+                "Kanpur",
+                5, # Kakadeo
+                "Under Investigation",
+                0,
+                diary_7,
+                (now - timedelta(hours=4)).strftime("%Y-%m-%d %H:%M:%S"),
+                0,
+                (now - timedelta(hours=4) + timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0008",
+                "My credit card was cloned at a fuel station in Hariparwat, and Rs 80,000 has been debited. Transaction alert is showing international purchase.",
+                "English",
+                "Cyber Fraud",
+                7,
+                "Negative",
+                "Agra",
+                9, # Hariparwat
+                "Resolved",
+                0,
+                diary_8,
+                (now - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S"),
+                0,
+                (now - timedelta(days=1) + timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0009",
+                "पिछले 1 हफ्ते से व्हाट्सएप पर अंजान नंबर से अश्लील तस्वीरें और धमकी भरे मैसेज आ रहे हैं। शिकायतकर्ता लंका वाराणसी क्षेत्र की निवासी है।",
+                "Hindi",
+                "Women Safety",
+                9,
+                "Negative",
+                "Varanasi",
+                7, # Lanka
+                "Pending",
+                0,
+                diary_9,
+                (now - timedelta(minutes=15)).strftime("%Y-%m-%d %H:%M:%S"),
+                1, # Escalated
+                (now - timedelta(minutes=14)).strftime("%Y-%m-%d %H:%M:%S")
+            ),
+            (
+                "TKT-20260701-0010",
+                "Hazratganj market me shopping ke dauran mera brown leather wallet chori ho gaya. Aadhaar card and Rs 4000 cash details contained.",
+                "Hinglish",
+                "Theft/Robbery",
+                5,
+                "Negative",
+                "Lucknow",
+                1, # Hazratganj
+                "Resolved",
+                0,
+                diary_10,
+                (now - timedelta(hours=6)).strftime("%Y-%m-%d %H:%M:%S"),
+                0,
+                (now - timedelta(hours=6) + timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
+            )
         ]
         
         cursor.executemany("""

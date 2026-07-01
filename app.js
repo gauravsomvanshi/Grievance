@@ -201,6 +201,116 @@ function initializeLocalStorageGrievances() {
                 created_at: formatTime(new Date(now.getTime() - 43200000)),
                 escalated: false,
                 escalation_time: formatTime(new Date(now.getTime() - 43140000))
+            },
+            {
+                ticket_id: "TKT-20260701-0006",
+                text: "Tajganj market me parking space ko lekar do paksho me lathi danda chal gaya hai. Tension badh rahi hai, turant police force bhejein.",
+                language: "Hinglish",
+                category: "Assault/Violence",
+                urgency_score: 10,
+                sentiment: "Negative",
+                district: "Agra",
+                assigned_station_id: 8, // Tajganj
+                station_name: "Tajganj",
+                sho_name: "Inspector Shailendra Giri",
+                station_phone: "+91 9454404101",
+                status: "Pending",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 480000)), message: "Grievance registered. Routed automatically by UP Police AI." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 480000)),
+                escalated: true,
+                escalation_time: formatTime(new Date(now.getTime() - 420000))
+            },
+            {
+                ticket_id: "TKT-20260701-0007",
+                text: "काकादेव में नवीन मार्केट के पास हमारे कमर्शियल प्लॉट पर कल रात कुछ असामाजिक तत्वों ने जबरन कब्जा कर लिया है और विरोध करने पर जान से मारने की धमकी दी है।",
+                language: "Hindi",
+                category: "Land Dispute",
+                urgency_score: 8,
+                sentiment: "Negative",
+                district: "Kanpur",
+                assigned_station_id: 5, // Kakadeo
+                station_name: "Kakadeo",
+                sho_name: "Inspector Sanjay Yadav",
+                station_phone: "+91 9454403902",
+                status: "Under Investigation",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 14400000)), message: "Grievance registered. Routed automatically by UP Police AI." },
+                    { time: formatTime(new Date(now.getTime() - 12000000)), message: "[Inspector Sanjay Yadav] Police patrol inspected the site. Halted work. Investigating registry documents." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 14400000)),
+                escalated: false,
+                escalation_time: formatTime(new Date(now.getTime() - 14340000))
+            },
+            {
+                ticket_id: "TKT-20260701-0008",
+                text: "My credit card was cloned at a fuel station in Hariparwat, and Rs 80,000 has been debited. Transaction alert is showing international purchase.",
+                language: "English",
+                category: "Cyber Fraud",
+                urgency_score: 7,
+                sentiment: "Negative",
+                district: "Agra",
+                assigned_station_id: 9, // Hariparwat
+                station_name: "Hariparwat",
+                sho_name: "Inspector V.K. Singh",
+                station_phone: "+91 9454404102",
+                status: "Resolved",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 86400000)), message: "Grievance registered. Routed automatically by UP Police AI." },
+                    { time: formatTime(new Date(now.getTime() - 70000000)), message: "[Inspector V.K. Singh] Raised dispute with merchant gateway. Card blocked." },
+                    { time: formatTime(new Date(now.getTime() - 50000000)), message: "[Inspector V.K. Singh] Cyber cell traced the gateway, money refunded to victim account. Case closed." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 86400000)),
+                escalated: false,
+                escalation_time: formatTime(new Date(now.getTime() - 86340000))
+            },
+            {
+                ticket_id: "TKT-20260701-0009",
+                text: "पिछले 1 हफ्ते से व्हाट्सएप पर अंजान नंबर से अश्लील तस्वीरें और धमकी भरे मैसेज आ रहे हैं। शिकायतकर्ता लंका वाराणसी क्षेत्र की निवासी है।",
+                language: "Hindi",
+                category: "Women Safety",
+                urgency_score: 9,
+                sentiment: "Negative",
+                district: "Varanasi",
+                assigned_station_id: 7, // Lanka
+                station_name: "Lanka",
+                sho_name: "Inspector Ashutosh Tiwari",
+                station_phone: "+91 9454404002",
+                status: "Pending",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 900000)), message: "Grievance registered. Routed automatically by UP Police AI." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 900000)),
+                escalated: true,
+                escalation_time: formatTime(new Date(now.getTime() - 840000))
+            },
+            {
+                ticket_id: "TKT-20260701-0010",
+                text: "Hazratganj market me shopping ke dauran mera brown leather wallet chori ho gaya. Aadhaar card and Rs 4000 cash details contained.",
+                language: "Hinglish",
+                category: "Theft/Robbery",
+                urgency_score: 5,
+                sentiment: "Negative",
+                district: "Lucknow",
+                assigned_station_id: 1, // Hazratganj
+                station_name: "Hazratganj",
+                sho_name: "Inspector Akhilesh Singh",
+                station_phone: "+91 9454403801",
+                status: "Resolved",
+                is_spam: false,
+                action_diary: [
+                    { time: formatTime(new Date(now.getTime() - 21600000)), message: "Grievance registered. Routed automatically by UP Police AI." },
+                    { time: formatTime(new Date(now.getTime() - 18000000)), message: "[Inspector Akhilesh Singh] Traced suspect using market CCTV footage." },
+                    { time: formatTime(new Date(now.getTime() - 10000000)), message: "[Inspector Akhilesh Singh] Suspect apprehended, wallet recovered with documents. Wallet handed back to owner." }
+                ],
+                created_at: formatTime(new Date(now.getTime() - 21600000)),
+                escalated: false,
+                escalation_time: formatTime(new Date(now.getTime() - 21540000))
             }
         ];
         
