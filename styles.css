@@ -1283,7 +1283,7 @@ input[type="file"]::-webkit-file-upload-button:hover {
 /* -------------------------------------------------------------
    LIGHT SKY BLUE & CONTRAST BLUE THEME OVERRIDES
 body {
-    background-color: #e3f2fd !important;
+    background-color: transparent !important;
     background-image: none !important;
     color: var(--text-main) !important;
 }
@@ -1411,7 +1411,7 @@ table td {
 
 /* Login Card Override */
 .login-overlay {
-    background: linear-gradient(135deg, rgba(227, 242, 253, 0.9), rgba(187, 222, 250, 0.9)) !important;
+    background: none !important;
 }
 .login-card {
     background: #ffffff !important;
