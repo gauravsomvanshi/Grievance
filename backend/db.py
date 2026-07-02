@@ -44,9 +44,32 @@ def init_db():
             created_at TEXT NOT NULL,
             escalated INTEGER DEFAULT 0,
             escalation_time TEXT NOT NULL,
+            sp_office TEXT,
+            circle_office TEXT,
+            public_image TEXT,
+            allotted_io TEXT,
+            investigation_report TEXT,
+            investigation_image TEXT,
             FOREIGN KEY(assigned_station_id) REFERENCES police_stations(id)
         )
     """)
+    
+    # Run migrations dynamically to support adding columns to an existing DB file
+    cursor.execute("PRAGMA table_info(grievances)")
+    columns = [row[1] for row in cursor.fetchall()]
+    new_cols = {
+        "sp_office": "TEXT",
+        "circle_office": "TEXT",
+        "public_image": "TEXT",
+        "allotted_io": "TEXT",
+        "investigation_report": "TEXT",
+        "investigation_image": "TEXT"
+    }
+    for col, col_type in new_cols.items():
+        if col not in columns:
+            cursor.execute(f"ALTER TABLE grievances ADD COLUMN {col} {col_type}")
+    conn.commit()
+
     
     # Check if police stations are seeded, if not seed them
     cursor.execute("SELECT COUNT(*) FROM police_stations")
