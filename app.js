@@ -6,6 +6,35 @@ let activeTab = "citizen";
 let selectedGrievanceId = null;
 let countdownIntervals = {};
 
+// Role-based Session State
+let currentUserRole = null; // citizen, sho, io, sp
+let currentUserSession = null; // { name: ..., details: ... }
+let currentPublicImageBase64 = null;
+let currentIOEvidenceImageBase64 = null;
+let selectedIOCaseId = null;
+
+// Cascading Offices Mappings
+const SP_OFFICES = ["Lucknow SP Office", "Kanpur SP Office", "Varanasi SP Office", "Agra SP Office"];
+
+const CIRCLE_OFFICES = {
+    "Lucknow SP Office": ["Hazratganj Circle", "Aliganj Circle", "Gomti Nagar Circle"],
+    "Kanpur SP Office": ["Kalyanpur Circle", "Kakadeo Circle"],
+    "Varanasi SP Office": ["Sigra Circle", "Lanka Circle"],
+    "Agra SP Office": ["Tajganj Circle", "Hariparwat Circle"]
+};
+
+const STATIONS_BY_CIRCLE = {
+    "Hazratganj Circle": ["Hazratganj"],
+    "Aliganj Circle": ["Aliganj"],
+    "Gomti Nagar Circle": ["Gomti Nagar"],
+    "Kalyanpur Circle": ["Kalyanpur"],
+    "Kakadeo Circle": ["Kakadeo"],
+    "Sigra Circle": ["Sigra"],
+    "Lanka Circle": ["Lanka"],
+    "Tajganj Circle": ["Tajganj"],
+    "Hariparwat Circle": ["Hariparwat"]
+};
+
 // Mock Data for Offline Demo Mode
 const MOCK_STATIONS = [
     { id: 1, name: "Hazratganj", district: "Lucknow", latitude: 26.8504, longitude: 80.9499, sho_name: "Inspector Akhilesh Singh", phone: "+91 9454403801" },
@@ -34,8 +63,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Start background tick loop
     setInterval(systemHeartbeat, 3000);
     
-    // Initial view
-    switchTab("citizen");
+    // Initialize session state
+    initSession();
 });
 
 // Update Header Clock
@@ -762,8 +791,12 @@ async function handleGrievanceSubmit(e) {
     e.preventDefault();
     
     const text = document.getElementById("complaint-text").value;
-    const dist = document.getElementById("citizen-district").value;
-    const station = document.getElementById("citizen-station").value;
+    const spOffice = document.getElementById("citizen-sp-office").value;
+    const circleOffice = document.getElementById("citizen-circle-office").value;
+    const policeStation = document.getElementById("citizen-police-station").value;
+    const publicImage = currentPublicImageBase64;
+    
+    const district = spOffice.split(" ")[0]; // "Lucknow SP Office" -> "Lucknow"
     
     const btn = document.getElementById("btn-submit-grievance");
     const spinner = document.getElementById("submit-spinner");
@@ -805,10 +838,7 @@ async function handleGrievanceSubmit(e) {
         if (isOfflineMode) {
             // Process NLP in JS
             const analysis = runMockNLPAnalysis(text);
-            const finalDist = dist || analysis.district;
-            const finalStation = station || analysis.assigned_station;
-            
-            const stationObj = MOCK_STATIONS.find(s => s.name === finalStation && s.district === finalDist) || MOCK_STATIONS[0];
+            const stationObj = MOCK_STATIONS.find(s => s.name === policeStation && s.district === district) || MOCK_STATIONS[0];
             
             const now = new Date();
             const ticketId = `TKT-${now.toISOString().slice(0,10).replace(/-/g,"")}-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -838,7 +868,13 @@ async function handleGrievanceSubmit(e) {
                 language: analysis.language,
                 status: "Pending",
                 is_spam: analysis.is_spam,
-                created_at: createdStr
+                created_at: createdStr,
+                sp_office: spOffice,
+                circle_office: circleOffice,
+                public_image: publicImage,
+                allotted_io: null,
+                investigation_report: null,
+                investigation_image: null
             };
             
             // Save to localStorage
@@ -849,7 +885,7 @@ async function handleGrievanceSubmit(e) {
                 station_name: stationObj.name,
                 sho_name: stationObj.sho_name,
                 station_phone: stationObj.phone,
-                district: finalDist,
+                district: district,
                 action_diary: mockDiary,
                 escalated: false,
                 escalation_time: escStr
@@ -863,8 +899,11 @@ async function handleGrievanceSubmit(e) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     text: text,
-                    custom_district: dist || null,
-                    custom_station: station || null
+                    custom_district: district,
+                    custom_station: policeStation,
+                    sp_office: spOffice,
+                    circle_office: circleOffice,
+                    public_image: publicImage
                 })
             });
             
@@ -899,6 +938,12 @@ async function handleGrievanceSubmit(e) {
         trackGrievance(outputData.ticket_id);
         
         document.getElementById("complaint-text").value = "";
+        document.getElementById("citizen-sp-office").value = "";
+        document.getElementById("citizen-circle-office").innerHTML = '<option value="">Select Circle Office</option>';
+        document.getElementById("citizen-circle-office").disabled = true;
+        document.getElementById("citizen-police-station").innerHTML = '<option value="">Select Police Station</option>';
+        document.getElementById("citizen-police-station").disabled = true;
+        clearComplaintImage();
         
     } catch (err) {
         alert("Submission Failed: " + err.message);
@@ -939,10 +984,41 @@ async function trackGrievance(ticketId = null) {
         
         const metaDiv = document.createElement("div");
         metaDiv.className = "timeline-meta";
-        metaDiv.innerHTML = `
+        
+        let metaHtml = `
             <div style="margin-bottom: 0.5rem;"><strong>Category:</strong> ${ticket.category} | <strong>Assigned Thana:</strong> ${ticket.station_name}</div>
-            <div><strong>Assigned Officer (SHO):</strong> ${ticket.sho_name} (${ticket.station_phone})</div>
+            <div style="margin-bottom: 0.5rem;"><strong>SP Office:</strong> ${ticket.sp_office || '-'} | <strong>Circle Office:</strong> ${ticket.circle_office || '-'}</div>
+            <div style="margin-bottom: 0.5rem;"><strong>Assigned Officer (SHO):</strong> ${ticket.sho_name} (${ticket.station_phone})</div>
         `;
+        
+        if (ticket.allotted_io) {
+            metaHtml += `<div style="margin-bottom: 0.5rem; color: var(--accent-blue);"><strong>Allotted IO Officer:</strong> ${ticket.allotted_io}</div>`;
+        }
+        
+        if (ticket.public_image) {
+            metaHtml += `
+                <div style="margin-bottom: 0.5rem;">
+                    <strong>Complainant Attachment:</strong><br>
+                    <img src="${ticket.public_image}" alt="Attachment" style="max-height: 100px; border-radius: 6px; border: 1px solid var(--gold); margin-top: 0.3rem; cursor: pointer; display: block;" onclick="window.open(this.src)">
+                </div>
+            `;
+        }
+        
+        if (ticket.investigation_report) {
+            metaHtml += `
+                <div style="margin-top: 0.8rem; padding: 0.8rem; background: rgba(0, 230, 118, 0.05); border: 1px solid var(--accent-green); border-radius: 8px;">
+                    <strong style="color: var(--accent-green); font-size: 0.85rem;">🔍 Investigation Report Filed:</strong>
+                    <p style="font-size: 0.85rem; margin-top: 0.3rem; white-space: pre-wrap; color: var(--text-main);">${ticket.investigation_report}</p>
+            `;
+            if (ticket.investigation_image) {
+                metaHtml += `
+                    <img src="${ticket.investigation_image}" alt="Evidence Photo" style="max-height: 80px; border-radius: 4px; border: 1px solid var(--accent-blue); margin-top: 0.5rem; cursor: pointer; display: block;" onclick="window.open(this.src)">
+                `;
+            }
+            metaHtml += `</div>`;
+        }
+        
+        metaDiv.innerHTML = metaHtml;
         container.appendChild(metaDiv);
         
         ticket.action_diary.forEach(event => {
@@ -1057,6 +1133,7 @@ function openSHODrawer(ticketId, currentStatus) {
     selectedGrievanceId = ticketId;
     document.getElementById("action-tkt-display").textContent = ticketId;
     document.getElementById("action-status-select").value = currentStatus;
+    document.getElementById("action-allot-io").value = "";
     
     const select = document.getElementById("sho-station-select");
     const stText = select.options[select.selectedIndex].text;
@@ -1081,8 +1158,13 @@ async function submitSHOAction(e) {
     if (!selectedGrievanceId) return;
     
     const shoName = document.getElementById("action-sho-name").value.trim();
-    const status = document.getElementById("action-status-select").value;
+    const allottedIo = document.getElementById("action-allot-io").value;
+    let status = document.getElementById("action-status-select").value;
     const message = document.getElementById("action-message").value.trim();
+    
+    if (allottedIo && status === "Pending") {
+        status = "Under Investigation";
+    }
     
     try {
         if (isOfflineMode) {
@@ -1092,6 +1174,15 @@ async function submitSHOAction(e) {
             if (idx !== -1) {
                 const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
                 list[idx].status = status;
+                
+                if (allottedIo) {
+                    list[idx].allotted_io = allottedIo;
+                    list[idx].action_diary.push({
+                        time: nowStr,
+                        message: `[SHO ${shoName}] Allotted to IO ${allottedIo} for investigation.`
+                    });
+                }
+                
                 list[idx].action_diary.push({
                     time: nowStr,
                     message: `[${shoName}] ${message}`
@@ -1100,6 +1191,19 @@ async function submitSHOAction(e) {
                 localStorage.setItem("up_police_grievances", JSON.stringify(list));
             }
         } else {
+            // Live Server submit
+            if (allottedIo) {
+                const allotRes = await fetch(`${API_BASE}/grievance/${selectedGrievanceId}/allot`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        allotted_io: allottedIo,
+                        sho_name: shoName
+                    })
+                });
+                if (!allotRes.ok) throw new Error("Failed to allot IO on central CCTNS");
+            }
+            
             const res = await fetch(`${API_BASE}/grievance/${selectedGrievanceId}/action`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },

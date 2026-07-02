@@ -30,11 +30,24 @@ class GrievanceSubmission(BaseModel):
     text: str
     custom_district: str = None  # Optional user override
     custom_station: str = None   # Optional user override
+    sp_office: str = None
+    circle_office: str = None
+    public_image: str = None
 
 class ActionUpdate(BaseModel):
     sho_name: str
     message: str
     status: str  # Pending, Under Investigation, Resolved
+
+class IOAllotment(BaseModel):
+    allotted_io: str
+    sho_name: str
+
+class InvestigationReportSubmission(BaseModel):
+    investigation_report: str
+    investigation_image: str = None
+    io_name: str
+    status: str
 
 def check_sla_escalations():
     """
@@ -123,18 +136,21 @@ def submit_grievance(submission: GrievanceSubmission):
     else:
         status = "Pending"
         
+    sp_office = submission.sp_office if submission.sp_office else f"{district} SP Office"
+    circle_office = submission.circle_office if submission.circle_office else f"{station_name} Circle"
+
     try:
         cursor.execute("""
             INSERT INTO grievances (
                 ticket_id, text, language, category, urgency_score, sentiment,
                 district, assigned_station_id, status, is_spam, action_diary,
-                created_at, escalated, escalation_time
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                created_at, escalated, escalation_time, sp_office, circle_office, public_image
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             ticket_id, submission.text, analysis["language"], analysis["category"],
             analysis["urgency_score"], analysis["sentiment"], district, station_id,
             status, 1 if analysis["is_spam"] else 0, json.dumps(action_diary),
-            created_at_str, 0, escalation_time
+            created_at_str, 0, escalation_time, sp_office, circle_office, submission.public_image
         ))
         conn.commit()
     except sqlite3.Error as e:
@@ -152,15 +168,20 @@ def submit_grievance(submission: GrievanceSubmission):
         "language": analysis["language"],
         "status": status,
         "is_spam": analysis["is_spam"],
-        "created_at": created_at_str
+        "created_at": created_at_str,
+        "sp_office": sp_office,
+        "circle_office": circle_office,
+        "public_image": submission.public_image
     }
+
 
 @app.get("/api/grievances")
 def get_grievances(
     district: str = None,
     station_id: int = None,
     status: str = None,
-    is_spam: int = 0
+    is_spam: int = 0,
+    allotted_io: str = None
 ):
     check_sla_escalations()
     
@@ -184,6 +205,9 @@ def get_grievances(
     if status:
         query += " AND g.status = ?"
         params.append(status)
+    if allotted_io:
+        query += " AND g.allotted_io = ?"
+        params.append(allotted_io)
         
     query += " ORDER BY g.created_at DESC"
     
@@ -209,7 +233,13 @@ def get_grievances(
             "action_diary": json.loads(r["action_diary"]),
             "created_at": r["created_at"],
             "escalated": bool(r["escalated"]),
-            "escalation_time": r["escalation_time"]
+            "escalation_time": r["escalation_time"],
+            "sp_office": r["sp_office"],
+            "circle_office": r["circle_office"],
+            "public_image": r["public_image"],
+            "allotted_io": r["allotted_io"],
+            "investigation_report": r["investigation_report"],
+            "investigation_image": r["investigation_image"]
         })
         
     conn.close()
@@ -252,8 +282,15 @@ def get_grievance_details(ticket_id: str):
         "action_diary": json.loads(r["action_diary"]),
         "created_at": r["created_at"],
         "escalated": bool(r["escalated"]),
-        "escalation_time": r["escalation_time"]
+        "escalation_time": r["escalation_time"],
+        "sp_office": r["sp_office"],
+        "circle_office": r["circle_office"],
+        "public_image": r["public_image"],
+        "allotted_io": r["allotted_io"],
+        "investigation_report": r["investigation_report"],
+        "investigation_image": r["investigation_image"]
     }
+
 
 @app.put("/api/grievance/{ticket_id}/action")
 def update_grievance_action(ticket_id: str, action: ActionUpdate):
@@ -287,6 +324,66 @@ def update_grievance_action(ticket_id: str, action: ActionUpdate):
     conn.close()
     
     return {"message": "Action diary and status updated successfully."}
+
+@app.put("/api/grievance/{ticket_id}/allot")
+def allot_grievance_io(ticket_id: str, allotment: IOAllotment):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT action_diary FROM grievances WHERE ticket_id = ?", (ticket_id,))
+    row = cursor.fetchone()
+    
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Grievance ticket not found.")
+        
+    diary = json.loads(row["action_diary"])
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    diary.append({
+        "time": now_str,
+        "message": f"[SHO {allotment.sho_name}] Allotted to IO {allotment.allotted_io} for investigation."
+    })
+    
+    cursor.execute("""
+        UPDATE grievances 
+        SET allotted_io = ?, status = 'Under Investigation', action_diary = ?
+        WHERE ticket_id = ?
+    """, (allotment.allotted_io, json.dumps(diary), ticket_id))
+    
+    conn.commit()
+    conn.close()
+    
+    return {"message": "IO allotted and status updated successfully."}
+
+@app.put("/api/grievance/{ticket_id}/report")
+def submit_investigation_report(ticket_id: str, report: InvestigationReportSubmission):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT action_diary FROM grievances WHERE ticket_id = ?", (ticket_id,))
+    row = cursor.fetchone()
+    
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="Grievance ticket not found.")
+        
+    diary = json.loads(row["action_diary"])
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    diary.append({
+        "time": now_str,
+        "message": f"[IO {report.io_name}] Filed investigation report. Status: {report.status}."
+    })
+    
+    cursor.execute("""
+        UPDATE grievances 
+        SET investigation_report = ?, investigation_image = ?, status = ?, action_diary = ?
+        WHERE ticket_id = ?
+    """, (report.investigation_report, report.investigation_image, report.status, json.dumps(diary), ticket_id))
+    
+    conn.commit()
+    conn.close()
+    
+    return {"message": "Investigation report submitted successfully."}
 
 @app.get("/api/stations")
 def get_stations(district: str = None):

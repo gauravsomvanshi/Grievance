@@ -68,7 +68,26 @@ def init_db():
     for col, col_type in new_cols.items():
         if col not in columns:
             cursor.execute(f"ALTER TABLE grievances ADD COLUMN {col} {col_type}")
+    
+    # Update SP Office and Circle Office for all seeded grievances if they are null
+    cursor.execute("""
+        UPDATE grievances
+        SET sp_office = district || ' SP Office',
+            circle_office = (SELECT name FROM police_stations WHERE id = assigned_station_id) || ' Circle'
+        WHERE sp_office IS NULL OR circle_office IS NULL
+    """)
+    
+    # Ensure some tickets have allotted_io and reports for testing
+    cursor.execute("UPDATE grievances SET allotted_io = 'SI Ramesh Kumar' WHERE ticket_id IN ('TKT-20260701-0001', 'TKT-20260701-0015') AND allotted_io IS NULL")
+    cursor.execute("UPDATE grievances SET allotted_io = 'SI Amit Singh' WHERE ticket_id IN ('TKT-20260701-0007', 'TKT-20260701-0012') AND allotted_io IS NULL")
+    cursor.execute("UPDATE grievances SET allotted_io = 'SI Vineet Yadav', investigation_report = 'Dispute resolved by summoning both parties and establishing a mutual peace bond.' WHERE ticket_id = 'TKT-20260701-0003' AND allotted_io IS NULL")
+    cursor.execute("UPDATE grievances SET allotted_io = 'SI Rajesh Kumar', investigation_report = 'Cyber fraud transaction blocked, payment gateway notified, funds recovered and refunded.' WHERE ticket_id = 'TKT-20260701-0008' AND allotted_io IS NULL")
+    cursor.execute("UPDATE grievances SET allotted_io = 'SI Ramesh Kumar', investigation_report = 'Wallet recovered via CCTV tracking of suspect.' WHERE ticket_id = 'TKT-20260701-0010' AND allotted_io IS NULL")
+    cursor.execute("UPDATE grievances SET allotted_io = 'SI Sanjay Yadav', investigation_report = 'Mobile tracked to dealer and recovered.' WHERE ticket_id = 'TKT-20260701-0014' AND allotted_io IS NULL")
+    cursor.execute("UPDATE grievances SET allotted_io = 'SI Vinay Verma', investigation_report = 'Instructions provided for tenant verification.' WHERE ticket_id = 'TKT-20260701-0016' AND allotted_io IS NULL")
+    
     conn.commit()
+
 
     
     # Check if police stations are seeded, if not seed them
