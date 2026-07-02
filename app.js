@@ -1328,6 +1328,9 @@ async function loadSPDashboard() {
         // Inject notifications feed
         renderSPAlertFeed(escalatedFeed, spamFeed, isSpamOnly);
         
+        // Inject Police Station Level Overview table
+        renderSPStationTable(stationsData, isSpamOnly);
+        
     } catch (e) {
         console.error("SP Dashboard load failed:", e);
     }
@@ -1541,4 +1544,644 @@ function getUrgencyColor(score) {
 // Sleep util
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// -------------------------------------------------------------
+// SESSION CONTROL & MOCK ROLE SIGN IN
+// -------------------------------------------------------------
+
+function initSession() {
+    const sessionStr = localStorage.getItem("up_police_session");
+    if (sessionStr) {
+        try {
+            const session = JSON.parse(sessionStr);
+            currentUserRole = session.role;
+            currentUserSession = session;
+            hideLoginOverlay();
+            applyRoleLayout();
+            switchTab(currentUserRole);
+            return;
+        } catch (e) {
+            console.error("Session parse failed, clearing.");
+            localStorage.removeItem("up_police_session");
+        }
+    }
+    showLoginOverlay();
+}
+
+function showLoginOverlay() {
+    document.getElementById("login-overlay").style.display = "flex";
+    selectLoginRole("citizen");
+}
+
+function hideLoginOverlay() {
+    document.getElementById("login-overlay").style.display = "none";
+}
+
+let selectedLoginRoleVal = "citizen";
+
+function selectLoginRole(role) {
+    selectedLoginRoleVal = role;
+    
+    // Toggle active role button class
+    document.querySelectorAll(".role-btn").forEach(btn => {
+        btn.classList.remove("active");
+    });
+    document.getElementById(`role-btn-${role}`).classList.add("active");
+    
+    const container = document.getElementById("login-fields-container");
+    const passInput = document.getElementById("login-password");
+    const passStar = document.getElementById("login-pass-req");
+    
+    container.innerHTML = "";
+    
+    if (role === "citizen") {
+        passInput.disabled = true;
+        passInput.placeholder = "Not required for Public";
+        passInput.required = false;
+        passStar.style.display = "none";
+    } else {
+        passInput.disabled = false;
+        passInput.placeholder = "Enter Password (demo: " + role + "123)";
+        passInput.required = true;
+        passStar.style.display = "inline";
+        
+        if (role === "sho") {
+            container.innerHTML = `
+                <div class="form-group">
+                    <label for="login-station">कार्यरत थाना (Select Police Station) <span class="required">*</span></label>
+                    <select id="login-station" required>
+                        ${MOCK_STATIONS.map(s => `<option value="${s.id}">${s.name} Thana (${s.district})</option>`).join("")}
+                    </select>
+                </div>
+            `;
+        } else if (role === "io") {
+            container.innerHTML = `
+                <div class="form-group">
+                    <label for="login-io-name">जांच अधिकारी (Select IO Officer) <span class="required">*</span></label>
+                    <select id="login-io-name" required>
+                        <option value="SI Ramesh Kumar">SI Ramesh Kumar (Lucknow)</option>
+                        <option value="SI Amit Singh">SI Amit Singh (Kanpur)</option>
+                        <option value="SI Vineet Yadav">SI Vineet Yadav (Varanasi)</option>
+                        <option value="SI Sanjay Yadav">SI Sanjay Yadav (Kanpur)</option>
+                        <option value="SI Rajesh Kumar">SI Rajesh Kumar (Lucknow)</option>
+                        <option value="SI Vinay Verma">SI Vinay Verma (Varanasi)</option>
+                    </select>
+                </div>
+            `;
+        } else if (role === "sp") {
+            container.innerHTML = `
+                <div class="form-group">
+                    <label for="login-sp-district">ज़िला मुख्यालय (Select District) <span class="required">*</span></label>
+                    <select id="login-sp-district" required>
+                        <option value="Lucknow">Lucknow SP Office</option>
+                        <option value="Kanpur">Kanpur SP Office</option>
+                        <option value="Varanasi">Varanasi SP Office</option>
+                        <option value="Agra">Agra SP Office</option>
+                    </select>
+                </div>
+            `;
+        }
+    }
+}
+
+function handleLoginSubmit(e) {
+    if (e) e.preventDefault();
+    
+    const role = selectedLoginRoleVal;
+    const password = document.getElementById("login-password").value.trim();
+    
+    // Verify password
+    if (role !== "citizen") {
+        const expectedPass = role + "123";
+        if (password !== expectedPass && password !== "admin123") {
+            alert(`Incorrect password. For testing, please use password: ${expectedPass}`);
+            return;
+        }
+    }
+    
+    let username = "";
+    let details = {};
+    
+    if (role === "citizen") {
+        username = "Public Citizen";
+    } else if (role === "sho") {
+        const selectEl = document.getElementById("login-station");
+        const stationId = parseInt(selectEl.value);
+        const station = MOCK_STATIONS.find(s => s.id === stationId);
+        username = station.sho_name;
+        details = { stationId: station.id, stationName: station.name, district: station.district };
+    } else if (role === "io") {
+        username = document.getElementById("login-io-name").value;
+        // assign default station/district based on mock names
+        let stationId = 1;
+        if (username.includes("Ramesh") || username.includes("Rajesh")) {
+            stationId = 1; // Hazratganj
+        } else if (username.includes("Amit") || username.includes("Sanjay")) {
+            stationId = 4; // Kalyanpur
+        } else {
+            stationId = 6; // Sigra
+        }
+        const station = MOCK_STATIONS.find(s => s.id === stationId);
+        details = { stationId: station.id, stationName: station.name, district: station.district };
+    } else if (role === "sp") {
+        const dist = document.getElementById("login-sp-district").value;
+        username = `SP ${dist}`;
+        details = { district: dist };
+    }
+    
+    currentUserRole = role;
+    currentUserSession = { role, username, ...details };
+    localStorage.setItem("up_police_session", JSON.stringify(currentUserSession));
+    
+    hideLoginOverlay();
+    applyRoleLayout();
+    switchTab(role);
+}
+
+function quickLogin(role, detail) {
+    selectedLoginRoleVal = role;
+    document.getElementById("login-password").value = role + "123";
+    
+    // Make sure selectLoginRole is evaluated so markup exists
+    selectLoginRole(role);
+    
+    // Pre-fill selects if detail is provided
+    if (role === "sho" && detail) {
+        const station = MOCK_STATIONS.find(s => s.name.includes(detail));
+        if (station) document.getElementById("login-station").value = station.id;
+    } else if (role === "io" && detail) {
+        document.getElementById("login-io-name").value = detail;
+    } else if (role === "sp" && detail) {
+        document.getElementById("login-sp-district").value = detail;
+    }
+    
+    handleLoginSubmit();
+}
+
+function handleLogout() {
+    currentUserRole = null;
+    currentUserSession = null;
+    localStorage.removeItem("up_police_session");
+    
+    // Clear state
+    document.getElementById("login-password").value = "";
+    currentPublicImageBase64 = null;
+    currentIOEvidenceImageBase64 = null;
+    selectedIOCaseId = null;
+    
+    showLoginOverlay();
+}
+
+function applyRoleLayout() {
+    // Hide all tabs by default
+    document.querySelectorAll(".nav-item").forEach(item => {
+        item.style.display = "none";
+    });
+    
+    // Show corresponding tab
+    if (currentUserRole === "citizen") {
+        document.getElementById("tab-citizen").style.display = "flex";
+    } else if (currentUserRole === "sho") {
+        document.getElementById("tab-sho").style.display = "flex";
+        // Lock station workspace
+        const stationSelect = document.getElementById("sho-station-select");
+        if (stationSelect) {
+            stationSelect.value = currentUserSession.stationId;
+            stationSelect.disabled = true; 
+        }
+    } else if (currentUserRole === "io") {
+        document.getElementById("tab-io").style.display = "flex";
+        document.getElementById("io-officer-info").textContent = `Logged in as: ${currentUserSession.username} (${currentUserSession.stationName} Thana)`;
+    } else if (currentUserRole === "sp") {
+        document.getElementById("tab-sp").style.display = "flex";
+        // Lock SP district
+        const distSelect = document.getElementById("sp-district-select");
+        if (distSelect) {
+            distSelect.value = currentUserSession.district;
+            distSelect.disabled = true;
+        }
+    }
+}
+
+// Tab Switching Override
+function switchTab(tabName) {
+    if (currentUserRole && currentUserRole !== tabName) {
+        tabName = currentUserRole;
+    }
+    
+    activeTab = tabName;
+    
+    document.querySelectorAll(".nav-item").forEach(item => {
+        item.classList.remove("active");
+    });
+    const activeBtn = document.getElementById(`tab-${tabName}`);
+    if (activeBtn) activeBtn.classList.add("active");
+    
+    document.querySelectorAll(".content-section").forEach(sec => {
+        sec.classList.remove("active");
+    });
+    const activeSec = document.getElementById(`view-${tabName}`);
+    if (activeSec) activeSec.classList.add("active");
+    
+    if (tabName === "sho") {
+        loadSHOGrievances();
+    } else if (tabName === "io") {
+        loadIOGrievances();
+    } else if (tabName === "sp") {
+        loadSPDashboard();
+    }
+}
+
+// -------------------------------------------------------------
+// CASCADING DISTRICT -> CIRCLE -> STATION SELECTORS
+// -------------------------------------------------------------
+
+function filterCircleOffices() {
+    const spSelect = document.getElementById("citizen-sp-office");
+    const circleSelect = document.getElementById("citizen-circle-office");
+    const stationSelect = document.getElementById("citizen-police-station");
+    
+    circleSelect.innerHTML = '<option value="">Select Circle Office</option>';
+    stationSelect.innerHTML = '<option value="">Select Police Station</option>';
+    stationSelect.disabled = true;
+    
+    const selectedSp = spSelect.value;
+    if (!selectedSp) {
+        circleSelect.disabled = true;
+        return;
+    }
+    
+    const circles = CIRCLE_OFFICES[selectedSp] || [];
+    circles.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c;
+        opt.textContent = c;
+        circleSelect.appendChild(opt);
+    });
+    
+    circleSelect.disabled = false;
+}
+
+function filterPoliceStations() {
+    const circleSelect = document.getElementById("citizen-circle-office");
+    const stationSelect = document.getElementById("citizen-police-station");
+    
+    stationSelect.innerHTML = '<option value="">Select Police Station</option>';
+    
+    const selectedCircle = circleSelect.value;
+    if (!selectedCircle) {
+        stationSelect.disabled = true;
+        return;
+    }
+    
+    const stations = STATIONS_BY_CIRCLE[selectedCircle] || [];
+    stations.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s;
+        opt.textContent = `${s} Police Station`;
+        stationSelect.appendChild(opt);
+    });
+    
+    stationSelect.disabled = false;
+}
+
+// -------------------------------------------------------------
+// IMAGE FILES TO BASE64 PREVIEW HANDLERS
+// -------------------------------------------------------------
+
+function previewComplaintImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (file.size > 2 * 1024 * 1024) {
+        alert("Image size should not exceed 2MB");
+        event.target.value = "";
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        currentPublicImageBase64 = e.target.result;
+        const previewImg = document.getElementById("complaint-image-preview-img");
+        previewImg.src = currentPublicImageBase64;
+        document.getElementById("complaint-image-preview").classList.remove("hidden");
+    };
+    reader.readAsDataURL(file);
+}
+
+function clearComplaintImage() {
+    document.getElementById("complaint-image").value = "";
+    const previewImg = document.getElementById("complaint-image-preview-img");
+    if (previewImg) previewImg.src = "";
+    const container = document.getElementById("complaint-image-preview");
+    if (container) container.classList.add("hidden");
+    currentPublicImageBase64 = null;
+}
+
+function previewIOEvidenceImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (file.size > 2 * 1024 * 1024) {
+        alert("Image size should not exceed 2MB");
+        event.target.value = "";
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        currentIOEvidenceImageBase64 = e.target.result;
+        const previewImg = document.getElementById("io-report-image-preview-img");
+        previewImg.src = currentIOEvidenceImageBase64;
+        document.getElementById("io-report-image-preview").classList.remove("hidden");
+    };
+    reader.readAsDataURL(file);
+}
+
+function clearIOEvidenceImage() {
+    document.getElementById("io-report-image").value = "";
+    const previewImg = document.getElementById("io-report-image-preview-img");
+    if (previewImg) previewImg.src = "";
+    const container = document.getElementById("io-report-image-preview");
+    if (container) container.classList.add("hidden");
+    currentIOEvidenceImageBase64 = null;
+}
+
+function checkIOAllotmentStatus() {
+    const ioSelect = document.getElementById("action-allot-io");
+    const statusSelect = document.getElementById("action-status-select");
+    if (ioSelect.value && statusSelect.value === "Pending") {
+        statusSelect.value = "Under Investigation";
+    }
+}
+
+// -------------------------------------------------------------
+// INVESTIGATING OFFICER (IO) WORKSTATION ACTIONS
+// -------------------------------------------------------------
+
+async function loadIOGrievances() {
+    const listContainer = document.getElementById("io-cases-list");
+    listContainer.innerHTML = "<p>Loading allotted cases...</p>";
+    
+    document.getElementById("io-detail-placeholder").style.display = "block";
+    document.getElementById("io-detail-content").classList.add("hidden");
+    selectedIOCaseId = null;
+    
+    try {
+        let cases = [];
+        const ioName = currentUserSession.username;
+        
+        if (isOfflineMode) {
+            const list = JSON.parse(localStorage.getItem("up_police_grievances") || "[]");
+            cases = list.filter(g => g.allotted_io === ioName);
+        } else {
+            const res = await fetch(`${API_BASE}/grievances?allotted_io=${encodeURIComponent(ioName)}`);
+            if (res.ok) cases = await res.json();
+        }
+        
+        document.getElementById("io-cases-count").textContent = `${cases.length} Assigned Case(s)`;
+        listContainer.innerHTML = "";
+        
+        if (cases.length === 0) {
+            listContainer.innerHTML = "<p style='color:var(--text-muted); text-align:center; padding: 2rem 0;'>No cases currently allotted to you.</p>";
+            return;
+        }
+        
+        cases.forEach(g => {
+            const card = document.createElement("div");
+            card.className = "card io-case-card";
+            card.style.cursor = "pointer";
+            card.style.padding = "1rem";
+            card.style.borderLeft = `4px solid ${getUrgencyColor(g.urgency_score)}`;
+            card.style.marginBottom = "0.5rem";
+            card.style.background = "rgba(15, 28, 63, 0.25)";
+            
+            const textPreview = g.text.length > 60 ? g.text.substring(0, 60) + "..." : g.text;
+            
+            card.innerHTML = `
+                <div class="flex-between" style="margin-bottom:0.4rem;">
+                    <strong style="color:var(--gold); font-size:0.85rem;">${g.ticket_id}</strong>
+                    <span class="badge ${g.status === 'Resolved' ? 'badge-success' : 'badge-gold'}" style="font-size:0.6rem; padding:0.15rem 0.4rem;">${g.status}</span>
+                </div>
+                <p style="font-size:0.85rem; margin-bottom:0.4rem; color:var(--text-main);">${textPreview}</p>
+                <div class="flex-between" style="font-size:0.7rem; color:var(--text-muted);">
+                    <span>${g.category}</span>
+                    <span>Urgency: ${g.urgency_score}/10</span>
+                </div>
+            `;
+            
+            card.addEventListener("click", () => {
+                document.querySelectorAll(".io-case-card").forEach(c => {
+                    c.style.background = "rgba(15, 28, 63, 0.25)";
+                    c.style.borderColor = "var(--glass-border)";
+                });
+                card.style.background = "rgba(240, 195, 67, 0.08)";
+                card.style.borderColor = "var(--gold)";
+                
+                selectIOCase(g);
+            });
+            
+            listContainer.appendChild(card);
+        });
+    } catch (e) {
+        listContainer.innerHTML = `<p style="color: var(--accent-red)">Error: ${e.message}</p>`;
+    }
+}
+
+let selectedIOCaseObj = null;
+
+function selectIOCase(g) {
+    selectedIOCaseId = g.ticket_id;
+    selectedIOCaseObj = g;
+    
+    document.getElementById("io-detail-placeholder").style.display = "none";
+    document.getElementById("io-detail-content").classList.remove("hidden");
+    
+    document.getElementById("io-detail-tkt").textContent = g.ticket_id;
+    document.getElementById("io-detail-category").textContent = g.category;
+    
+    const statusEl = document.getElementById("io-detail-status");
+    statusEl.textContent = g.status;
+    statusEl.className = "badge " + (g.status === 'Resolved' ? 'badge-success' : 'badge-gold');
+    
+    document.getElementById("io-detail-text").textContent = g.text;
+    
+    document.getElementById("io-detail-sp").textContent = g.sp_office || "-";
+    document.getElementById("io-detail-circle").textContent = g.circle_office || "-";
+    document.getElementById("io-detail-station").textContent = `${g.station_name || g.assigned_station || '-'} Police Station`;
+    document.getElementById("io-detail-date").textContent = g.created_at;
+    
+    const imageSec = document.getElementById("io-detail-image-sec");
+    const imageEl = document.getElementById("io-detail-image");
+    
+    if (g.public_image) {
+        imageEl.src = g.public_image;
+        imageSec.style.display = "block";
+    } else {
+        imageSec.style.display = "none";
+        imageEl.src = "";
+    }
+    
+    // Set report form values if already filled
+    document.getElementById("io-report-text").value = g.investigation_report || "";
+    document.getElementById("io-report-status").value = g.status;
+    
+    if (g.investigation_image) {
+        currentIOEvidenceImageBase64 = g.investigation_image;
+        const previewImg = document.getElementById("io-report-image-preview-img");
+        previewImg.src = g.investigation_image;
+        document.getElementById("io-report-image-preview").classList.remove("hidden");
+    } else {
+        clearIOEvidenceImage();
+    }
+}
+
+function downloadGrievanceDocument() {
+    if (!selectedIOCaseObj) return;
+    
+    const g = selectedIOCaseObj;
+    
+    const content = `=========================================================
+                    UTTAR PRADESH POLICE
+               OFFICIAL COMPLAINT MEMORANDUM
+=========================================================
+TICKET REF ID   : ${g.ticket_id}
+CREATED AT      : ${g.created_at}
+LANGUAGE        : ${g.language}
+CATEGORY        : ${g.category}
+URGENCY SCORE   : ${g.urgency_score}/10
+SENTIMENT       : ${g.sentiment}
+CURRENT STATUS  : ${g.status}
+
+---------------------------------------------------------
+JURISDICTION DETAILS:
+SP OFFICE       : ${g.sp_office || (g.district + " SP Office")}
+CIRCLE OFFICE   : ${g.circle_office || '-'}
+POLICE STATION  : ${g.station_name || g.assigned_station || '-'} Police Station
+OFFICER (SHO)   : ${g.sho_name || 'Inspector In-charge'}
+
+---------------------------------------------------------
+PUBLIC COMPLAINT STATEMENT:
+${g.text}
+
+=========================================================
+                 UP POLICE CCTNS ARCHIVE COPY
+=========================================================
+`;
+
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `Grievance_${g.ticket_id}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+async function submitIOInvestigationReport(e) {
+    e.preventDefault();
+    if (!selectedIOCaseId) return;
+    
+    const reportText = document.getElementById("io-report-text").value.trim();
+    const status = document.getElementById("io-report-status").value;
+    const evidenceImage = currentIOEvidenceImageBase64;
+    const ioName = currentUserSession.username;
+    
+    try {
+        if (isOfflineMode) {
+            const list = JSON.parse(localStorage.getItem("up_police_grievances") || "[]");
+            const idx = list.findIndex(g => g.ticket_id === selectedIOCaseId);
+            if (idx !== -1) {
+                const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 19);
+                list[idx].status = status;
+                list[idx].investigation_report = reportText;
+                list[idx].investigation_image = evidenceImage;
+                list[idx].action_diary.push({
+                    time: nowStr,
+                    message: `[IO ${ioName}] Filed investigation report. Status: ${status}.`
+                });
+                localStorage.setItem("up_police_grievances", JSON.stringify(list));
+            }
+        } else {
+            const res = await fetch(`${API_BASE}/grievance/${selectedIOCaseId}/report`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    investigation_report: reportText,
+                    investigation_image: evidenceImage,
+                    io_name: ioName,
+                    status: status
+                })
+            });
+            if (!res.ok) throw new Error("Failed to file investigation report on CCTNS server");
+        }
+        
+        alert("Investigation report submitted successfully.");
+        
+        // Reset report form
+        document.getElementById("io-report-text").value = "";
+        clearIOEvidenceImage();
+        
+        // Reload IO workstation
+        loadIOGrievances();
+        
+    } catch (err) {
+        alert("Error: " + err.message);
+    }
+}
+
+// -------------------------------------------------------------
+// SP DASHBOARD POLICE STATION LEVEL RENDERER
+// -------------------------------------------------------------
+
+function renderSPStationTable(stations, isSpamOnly) {
+    const tbody = document.getElementById("sp-ps-table-body");
+    if (!tbody) return;
+    
+    tbody.innerHTML = "";
+    if (stations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No station data available for this district.</td></tr>';
+        return;
+    }
+    
+    stations.forEach(st => {
+        const tr = document.createElement("tr");
+        
+        let statusGlow = `<span class="badge badge-success">Compliant</span>`;
+        if (st.escalated_cases > 0 && !isSpamOnly) {
+            statusGlow = `<span class="badge badge-danger" style="animation: pulse-red 1.5s infinite">Breach Alert</span>`;
+        } else if (st.pending_cases > 0 && !isSpamOnly) {
+            statusGlow = `<span class="badge badge-gold">Pending Actions</span>`;
+        }
+        
+        tr.innerHTML = `
+            <td style="font-weight: 700; color: var(--gold); cursor: pointer;" onclick="quickFilterStation('${st.name}')">${st.name} Thana</td>
+            <td>${st.sho_name || 'Inspector In-charge'}</td>
+            <td>${statusGlow}</td>
+            <td style="text-align:center; font-weight:600;">${st.total_cases}</td>
+            <td style="text-align:center; color: var(--accent-orange); font-weight:600;">${isSpamOnly ? 0 : st.pending_cases}</td>
+            <td style="text-align:center; color: var(--accent-blue); font-weight:600;">${isSpamOnly ? 0 : st.active_cases}</td>
+            <td style="text-align:center; color: var(--accent-green); font-weight:600;">${isSpamOnly ? 0 : st.resolved_cases}</td>
+            <td style="text-align:center; color: var(--accent-red); font-weight:600;">${isSpamOnly ? 0 : st.escalated_cases}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function quickFilterStation(stationName) {
+    // Allows SP to drill down into a station workspace directly
+    const shoSelect = document.getElementById("sho-station-select");
+    if (shoSelect) {
+        for (let i = 0; i < shoSelect.options.length; i++) {
+            if (shoSelect.options[i].text.includes(stationName)) {
+                shoSelect.selectedIndex = i;
+                break;
+            }
+        }
+        const prevRole = currentUserRole;
+        currentUserRole = "sho";
+        switchTab("sho");
+        currentUserRole = prevRole; // Restore SP context
+    }
 }

@@ -1121,3 +1121,135 @@ input:checked + .slider:before {
         grid-template-columns: 1fr;
     }
 }
+
+/* -------------------------------------------------------------
+   LOGIN PAGE OVERLAY & ROLE SELECTOR STYLES
+   ------------------------------------------------------------- */
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    background-color: var(--navy);
+    background-image: 
+        radial-gradient(at 10% 10%, rgba(0, 210, 255, 0.08) 0px, transparent 50%),
+        radial-gradient(at 90% 90%, rgba(240, 195, 67, 0.05) 0px, transparent 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+.login-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 480px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.login-brand {
+    margin-bottom: 1.5rem;
+}
+
+.login-role-selector {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin: 1.5rem 0;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 0.4rem;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.login-role-selector .role-btn {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    flex-grow: 1;
+}
+
+.login-role-selector .role-btn:hover {
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.login-role-selector .role-btn.active {
+    background: rgba(240, 195, 67, 0.15);
+    color: var(--gold);
+    border-color: var(--glass-border);
+    box-shadow: 0 4px 15px rgba(240, 195, 67, 0.08);
+}
+
+/* -------------------------------------------------------------
+   IO WORKSTATION STYLES
+   ------------------------------------------------------------- */
+.io-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.io-case-card {
+    transition: all 0.3s ease;
+    border: 1px solid var(--glass-border) !important;
+}
+
+.io-case-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--gold) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+}
+
+.image-preview-box {
+    background: rgba(0, 0, 0, 0.25);
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    display: inline-block;
+}
+
+/* -------------------------------------------------------------
+   FILE UPLOAD COMPONENT STYLES
+   ------------------------------------------------------------- */
+input[type="file"] {
+    background-color: var(--navy-deep);
+    border: 1px dashed var(--glass-border);
+    color: var(--text-muted);
+    border-radius: 8px;
+    padding: 0.8rem;
+    cursor: pointer;
+    width: 100%;
+}
+input[type="file"]::-webkit-file-upload-button {
+    background: var(--navy-lighter);
+    color: var(--white);
+    border: 1px solid var(--glass-border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 0.8rem;
+    transition: all 0.3s ease;
+}
+input[type="file"]::-webkit-file-upload-button:hover {
+    background: var(--gold);
+    color: var(--text-dark);
+}

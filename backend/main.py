@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Optional
 import sqlite3
 import json
 import random
@@ -28,11 +29,11 @@ def startup_event():
 
 class GrievanceSubmission(BaseModel):
     text: str
-    custom_district: str = None  # Optional user override
-    custom_station: str = None   # Optional user override
-    sp_office: str = None
-    circle_office: str = None
-    public_image: str = None
+    custom_district: Optional[str] = None  # Optional user override
+    custom_station: Optional[str] = None   # Optional user override
+    sp_office: Optional[str] = None
+    circle_office: Optional[str] = None
+    public_image: Optional[str] = None
 
 class ActionUpdate(BaseModel):
     sho_name: str
@@ -45,7 +46,7 @@ class IOAllotment(BaseModel):
 
 class InvestigationReportSubmission(BaseModel):
     investigation_report: str
-    investigation_image: str = None
+    investigation_image: Optional[str] = None
     io_name: str
     status: str
 
