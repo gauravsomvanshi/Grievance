@@ -54,6 +54,31 @@ def init_db():
         )
     """)
     
+    # Create users table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL,
+            full_name TEXT NOT NULL,
+            phone TEXT NOT NULL,
+            aadhaar TEXT NOT NULL,
+            email TEXT,
+            created_at TEXT NOT NULL
+        )
+    """)
+    
+    # Seed default test user if not exists
+    cursor.execute("SELECT COUNT(*) FROM users WHERE username = 'citizen1'")
+    if cursor.fetchone()[0] == 0:
+        import hashlib
+        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        citizen1_hash = hashlib.sha256("citizen123".encode()).hexdigest()
+        cursor.execute("""
+            INSERT INTO users (username, password_hash, full_name, phone, aadhaar, email, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, ("citizen1", citizen1_hash, "Rajesh Citizen", "9876543210", "123456789012", "citizen1@gmail.com", now_str))
+    
     # Run migrations dynamically to support adding columns to an existing DB file
     cursor.execute("PRAGMA table_info(grievances)")
     columns = [row[1] for row in cursor.fetchall()]

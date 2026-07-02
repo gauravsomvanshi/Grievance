@@ -1253,3 +1253,33 @@ input[type="file"]::-webkit-file-upload-button:hover {
     background: var(--gold);
     color: var(--text-dark);
 }
+
+/* -------------------------------------------------------------
+   SIGN UP ACCOUNT CARD LAYOUT ADJUSTMENTS
+   ------------------------------------------------------------- */
+#signup-form .form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+#signup-form .form-row .form-group {
+    flex: 1;
+}
+
+#signup-form a, #login-form a {
+    color: var(--gold);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#signup-form a:hover, #login-form a:hover {
+    color: var(--white);
+    border-color: var(--white) !important;
+}
+
+@media (max-width: 480px) {
+    #signup-form .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}

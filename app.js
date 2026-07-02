@@ -1595,16 +1595,21 @@ function selectLoginRole(role) {
     
     container.innerHTML = "";
     
+    // Enable password field for all roles
+    passInput.disabled = false;
+    passInput.required = true;
+    passStar.style.display = "inline";
+    
     if (role === "citizen") {
-        passInput.disabled = true;
-        passInput.placeholder = "Not required for Public";
-        passInput.required = false;
-        passStar.style.display = "none";
+        passInput.placeholder = "Enter Password (demo: citizen123)";
+        container.innerHTML = `
+            <div class="form-group">
+                <label for="login-username">यूज़रनेम (Citizen Username) <span class="required">*</span></label>
+                <input type="text" id="login-username" placeholder="Enter your registered username" required>
+            </div>
+        `;
     } else {
-        passInput.disabled = false;
         passInput.placeholder = "Enter Password (demo: " + role + "123)";
-        passInput.required = true;
-        passStar.style.display = "inline";
         
         if (role === "sho") {
             container.innerHTML = `
@@ -1645,13 +1650,13 @@ function selectLoginRole(role) {
     }
 }
 
-function handleLoginSubmit(e) {
+async function handleLoginSubmit(e) {
     if (e) e.preventDefault();
     
     const role = selectedLoginRoleVal;
     const password = document.getElementById("login-password").value.trim();
     
-    // Verify password
+    // Verify password for officials
     if (role !== "citizen") {
         const expectedPass = role + "123";
         if (password !== expectedPass && password !== "admin123") {
@@ -1664,7 +1669,43 @@ function handleLoginSubmit(e) {
     let details = {};
     
     if (role === "citizen") {
-        username = "Public Citizen";
+        const citizenUsername = document.getElementById("login-username").value.trim();
+        let authenticatedUser = null;
+        
+        try {
+            if (isOfflineMode) {
+                await initializeLocalStorageUsers();
+                const users = JSON.parse(localStorage.getItem("up_police_users") || "[]");
+                const passwordHash = await sha256(password);
+                
+                authenticatedUser = users.find(u => u.username === citizenUsername && u.password_hash === passwordHash);
+            } else {
+                const res = await fetch(`${API_BASE}/auth/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        username: citizenUsername,
+                        password: password
+                    })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    authenticatedUser = data.user;
+                }
+            }
+        } catch (err) {
+            console.error(err);
+        }
+        
+        if (!authenticatedUser) {
+            alert("Authentication failed! Invalid username or password.");
+            return;
+        }
+        
+        // Link details to logged-in user identity
+        username = authenticatedUser.full_name;
+        details = { citizenUsername: authenticatedUser.username, phone: authenticatedUser.phone, aadhaar: authenticatedUser.aadhaar };
+        
     } else if (role === "sho") {
         const selectEl = document.getElementById("login-station");
         const stationId = parseInt(selectEl.value);
@@ -1673,14 +1714,13 @@ function handleLoginSubmit(e) {
         details = { stationId: station.id, stationName: station.name, district: station.district };
     } else if (role === "io") {
         username = document.getElementById("login-io-name").value;
-        // assign default station/district based on mock names
         let stationId = 1;
         if (username.includes("Ramesh") || username.includes("Rajesh")) {
-            stationId = 1; // Hazratganj
+            stationId = 1; 
         } else if (username.includes("Amit") || username.includes("Sanjay")) {
-            stationId = 4; // Kalyanpur
+            stationId = 4; 
         } else {
-            stationId = 6; // Sigra
+            stationId = 6; 
         }
         const station = MOCK_STATIONS.find(s => s.id === stationId);
         details = { stationId: station.id, stationName: station.name, district: station.district };
@@ -1699,24 +1739,29 @@ function handleLoginSubmit(e) {
     switchTab(role);
 }
 
-function quickLogin(role, detail) {
+async function quickLogin(role, detail) {
     selectedLoginRoleVal = role;
-    document.getElementById("login-password").value = role + "123";
     
     // Make sure selectLoginRole is evaluated so markup exists
     selectLoginRole(role);
     
-    // Pre-fill selects if detail is provided
-    if (role === "sho" && detail) {
-        const station = MOCK_STATIONS.find(s => s.name.includes(detail));
-        if (station) document.getElementById("login-station").value = station.id;
-    } else if (role === "io" && detail) {
-        document.getElementById("login-io-name").value = detail;
-    } else if (role === "sp" && detail) {
-        document.getElementById("login-sp-district").value = detail;
+    if (role === "citizen") {
+        document.getElementById("login-username").value = detail || "citizen1";
+        document.getElementById("login-password").value = "citizen123";
+    } else {
+        document.getElementById("login-password").value = role + "123";
+        
+        if (role === "sho" && detail) {
+            const station = MOCK_STATIONS.find(s => s.name.includes(detail));
+            if (station) document.getElementById("login-station").value = station.id;
+        } else if (role === "io" && detail) {
+            document.getElementById("login-io-name").value = detail;
+        } else if (role === "sp" && detail) {
+            document.getElementById("login-sp-district").value = detail;
+        }
     }
     
-    handleLoginSubmit();
+    await handleLoginSubmit();
 }
 
 function handleLogout() {
@@ -2183,5 +2228,137 @@ function quickFilterStation(stationName) {
         currentUserRole = "sho";
         switchTab("sho");
         currentUserRole = prevRole; // Restore SP context
+    }
+}
+
+// -------------------------------------------------------------
+// USER SIGNUP & AUTH HELPERS
+// -------------------------------------------------------------
+
+function toggleLoginView(view) {
+    const loginForm = document.getElementById("login-form");
+    const signupForm = document.getElementById("signup-form");
+    const roleSelector = document.getElementById("login-role-selector");
+    const helperContainer = document.getElementById("demo-login-helper");
+    
+    if (view === "signup") {
+        loginForm.style.display = "none";
+        signupForm.style.display = "block";
+        roleSelector.style.display = "none";
+        helperContainer.style.display = "none";
+    } else {
+        loginForm.style.display = "block";
+        signupForm.style.display = "none";
+        roleSelector.style.display = "flex";
+        helperContainer.style.display = "block";
+        selectLoginRole(selectedLoginRoleVal);
+    }
+}
+
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
+
+async function initializeLocalStorageUsers() {
+    if (!localStorage.getItem("up_police_users")) {
+        const hash = await sha256("citizen123");
+        const defaultUsers = [
+            {
+                username: "citizen1",
+                password_hash: hash,
+                full_name: "Rajesh Citizen",
+                phone: "9876543210",
+                aadhaar: "123456789012",
+                email: "citizen1@gmail.com"
+            }
+        ];
+        localStorage.setItem("up_police_users", JSON.stringify(defaultUsers));
+    }
+}
+
+async function handleSignupSubmit(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById("signup-username").value.trim();
+    const fullName = document.getElementById("signup-fullname").value.trim();
+    const phone = document.getElementById("signup-phone").value.trim();
+    const aadhaar = document.getElementById("signup-aadhaar").value.trim();
+    const email = document.getElementById("signup-email").value.trim();
+    const password = document.getElementById("signup-password").value;
+    const confirmPassword = document.getElementById("signup-confirm-password").value;
+    
+    if (password !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+    }
+    
+    if (phone.length !== 10) {
+        alert("Phone Number must be exactly 10 digits!");
+        return;
+    }
+    
+    if (aadhaar.length !== 12) {
+        alert("Aadhaar Card Number must be exactly 12 digits!");
+        return;
+    }
+    
+    try {
+        if (isOfflineMode) {
+            await initializeLocalStorageUsers();
+            
+            const users = JSON.parse(localStorage.getItem("up_police_users") || "[]");
+            if (users.some(u => u.username === username)) {
+                alert("Username is already registered!");
+                return;
+            }
+            
+            const passwordHash = await sha256(password);
+            users.push({
+                username: username,
+                password_hash: passwordHash,
+                full_name: fullName,
+                phone: phone,
+                aadhaar: aadhaar,
+                email: email || null
+            });
+            localStorage.setItem("up_police_users", JSON.stringify(users));
+        } else {
+            // Live Server signup post
+            const res = await fetch(`${API_BASE}/auth/signup`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                    full_name: fullName,
+                    phone: phone,
+                    aadhaar: aadhaar,
+                    email: email || null
+                })
+            });
+            
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.detail || "Signup failed on CCTNS server");
+            }
+        }
+        
+        alert("Account registered successfully! You can now sign in.");
+        toggleLoginView("login");
+        
+        // Populate credentials in form
+        selectedLoginRoleVal = "citizen";
+        selectLoginRole("citizen");
+        
+        const uInput = document.getElementById("login-username");
+        if (uInput) uInput.value = username;
+        document.getElementById("login-password").value = password;
+        
+    } catch (err) {
+        alert("Registration failed: " + err.message);
     }
 }

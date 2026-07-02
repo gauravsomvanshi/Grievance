@@ -569,31 +569,82 @@
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.1rem;">Bilingual Grievance Redressal & Control Portal</p>
             </div>
 
-            <div class="login-role-selector" style="display: flex; gap: 0.5rem; justify-content: center; margin: 1.5rem 0;">
+            <div class="login-role-selector" id="login-role-selector" style="display: flex; gap: 0.5rem; justify-content: center; margin: 1.5rem 0;">
                 <button type="button" class="btn role-btn active" id="role-btn-citizen" onclick="selectLoginRole('citizen')">Public</button>
                 <button type="button" class="btn role-btn" id="role-btn-sho" onclick="selectLoginRole('sho')">SHO</button>
                 <button type="button" class="btn role-btn" id="role-btn-io" onclick="selectLoginRole('io')">IO</button>
                 <button type="button" class="btn role-btn" id="role-btn-sp" onclick="selectLoginRole('sp')">SP</button>
             </div>
             
+            <!-- Sign In Form -->
             <form id="login-form" onsubmit="handleLoginSubmit(event)" style="text-align: left; margin-top: 1rem;">
                 <div id="login-fields-container">
                     <!-- Loaded dynamically in app.js -->
                 </div>
                 <div class="form-group">
-                    <label for="login-password">पासवर्ड (Password) <span class="required" id="login-pass-req" style="display:none;">*</span></label>
-                    <input type="password" id="login-password" placeholder="Not required for Public" disabled>
+                    <label for="login-password">पासवर्ड (Password) <span class="required" id="login-pass-req">*</span></label>
+                    <input type="password" id="login-password" placeholder="Enter Password" required>
                 </div>
                 
                 <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
                     <span>लॉग इन करें | Sign In</span>
                 </button>
+
+                <div style="text-align: center; margin-top: 1.2rem; font-size: 0.85rem;">
+                    <span style="color: var(--text-muted);">Don't have an account? </span>
+                    <a href="#" onclick="toggleLoginView('signup')" style="color: var(--gold); font-weight: 600; text-decoration: none; border-bottom: 1px dashed var(--gold); padding-bottom: 1px;">Sign Up</a>
+                </div>
             </form>
 
-            <div class="demo-login-helper" style="margin-top: 2rem; border-top: 1px dashed var(--glass-border); padding-top: 1rem; text-align: center;">
+            <!-- Sign Up Form -->
+            <form id="signup-form" onsubmit="handleSignupSubmit(event)" style="text-align: left; margin-top: 1rem; display: none;">
+                <div class="form-group">
+                    <label for="signup-username">यूज़रनेम (Username) <span class="required">*</span></label>
+                    <input type="text" id="signup-username" required placeholder="Choose a unique username">
+                </div>
+                <div class="form-group">
+                    <label for="signup-fullname">पूरा नाम (Full Name) <span class="required">*</span></label>
+                    <input type="text" id="signup-fullname" required placeholder="Enter your full name">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signup-phone">मोबाइल नंबर (Phone Number) <span class="required">*</span></label>
+                        <input type="tel" id="signup-phone" required placeholder="10-digit number" pattern="[0-9]{10}">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-aadhaar">आधार नंबर (Aadhaar Number) <span class="required">*</span></label>
+                        <input type="text" id="signup-aadhaar" required placeholder="12-digit number" pattern="[0-9]{12}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">ईमेल पता (Email Address)</label>
+                    <input type="email" id="signup-email" placeholder="example@gmail.com (optional)">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signup-password">पासवर्ड (Password) <span class="required">*</span></label>
+                        <input type="password" id="signup-password" required placeholder="Create password">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirm-password">पासवर्ड की पुष्टि करें (Confirm Password) <span class="required">*</span></label>
+                        <input type="password" id="signup-confirm-password" required placeholder="Confirm password">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
+                    <span>पंजीकरण करें | Register Account</span>
+                </button>
+                
+                <div style="text-align: center; margin-top: 1.2rem; font-size: 0.85rem;">
+                    <span style="color: var(--text-muted);">Already have an account? </span>
+                    <a href="#" onclick="toggleLoginView('login')" style="color: var(--gold); font-weight: 600; text-decoration: none; border-bottom: 1px dashed var(--gold); padding-bottom: 1px;">Sign In</a>
+                </div>
+            </form>
+
+            <div class="demo-login-helper" id="demo-login-helper" style="margin-top: 2rem; border-top: 1px dashed var(--glass-border); padding-top: 1rem; text-align: center;">
                 <span style="font-size: 0.75rem; color: var(--gold); display: block; margin-bottom: 0.5rem; font-weight: 600;">⚡ DEMO BYPASS / QUICK LOGIN LINKS:</span>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                    <button class="btn btn-secondary btn-sm" onclick="quickLogin('citizen')">Public Desk</button>
+                    <button class="btn btn-secondary btn-sm" onclick="quickLogin('citizen', 'citizen1')">Test Citizen (citizen1)</button>
                     <button class="btn btn-secondary btn-sm" onclick="quickLogin('sho', 'Hazratganj')">Hazratganj SHO</button>
                     <button class="btn btn-secondary btn-sm" onclick="quickLogin('io', 'SI Ramesh Kumar')">SI Ramesh Kumar (IO)</button>
                     <button class="btn btn-secondary btn-sm" onclick="quickLogin('sp', 'Lucknow')">Lucknow SP</button>

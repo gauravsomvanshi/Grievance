@@ -50,6 +50,18 @@ class InvestigationReportSubmission(BaseModel):
     io_name: str
     status: str
 
+class UserSignup(BaseModel):
+    username: str
+    password: str
+    full_name: str
+    phone: str
+    aadhaar: str
+    email: Optional[str] = None
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
 def check_sla_escalations():
     """
     Checks for any pending grievances that have breached their SLA (1 minute for demo)
@@ -84,6 +96,79 @@ def check_sla_escalations():
         
     conn.commit()
     conn.close()
+
+@app.post("/api/auth/signup")
+def auth_signup(user: UserSignup):
+    username = user.username.strip()
+    if not username:
+        raise HTTPException(status_code=400, detail="Username cannot be empty")
+    
+    # Aadhaar must be 12 digits
+    aadhaar_cleaned = "".join(filter(str.isdigit, user.aadhaar))
+    if len(aadhaar_cleaned) != 12:
+        raise HTTPException(status_code=400, detail="Aadhaar Card Number must be exactly 12 digits")
+        
+    # Phone must be 10 digits
+    phone_cleaned = "".join(filter(str.isdigit, user.phone))
+    if len(phone_cleaned) != 10:
+        raise HTTPException(status_code=400, detail="Phone Number must be exactly 10 digits")
+        
+    import hashlib
+    password_hash = hashlib.sha256(user.password.encode()).hexdigest()
+    created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Check if username already exists
+    cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
+    if cursor.fetchone():
+        conn.close()
+        raise HTTPException(status_code=400, detail="Username already registered")
+        
+    try:
+        cursor.execute("""
+            INSERT INTO users (username, password_hash, full_name, phone, aadhaar, email, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (username, password_hash, user.full_name, phone_cleaned, aadhaar_cleaned, user.email, created_at))
+        conn.commit()
+    except sqlite3.Error as e:
+        conn.close()
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+        
+    conn.close()
+    return {"status": "success", "message": "User registered successfully"}
+
+@app.post("/api/auth/login")
+def auth_login(credentials: UserLogin):
+    username = credentials.username.strip()
+    
+    import hashlib
+    password_hash = hashlib.sha256(credentials.password.encode()).hexdigest()
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT username, full_name, phone, aadhaar, email 
+        FROM users 
+        WHERE username = ? AND password_hash = ?
+    """, (username, password_hash))
+    user_row = cursor.fetchone()
+    conn.close()
+    
+    if not user_row:
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+        
+    return {
+        "status": "success",
+        "user": {
+            "username": user_row["username"],
+            "full_name": user_row["full_name"],
+            "phone": user_row["phone"],
+            "aadhaar": user_row["aadhaar"],
+            "email": user_row["email"]
+        }
+    }
 
 @app.post("/api/grievance/submit")
 def submit_grievance(submission: GrievanceSubmission):
