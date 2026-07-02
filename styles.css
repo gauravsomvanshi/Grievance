@@ -1131,7 +1131,7 @@ input:checked + .slider:before {
     width: 100vw;
     height: 100vh;
     z-index: 1000;
-    background: none;
+    background-color: #e3f2fd;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1411,7 +1411,7 @@ table td {
 
 /* Login Card Override */
 .login-overlay {
-    background: none !important;
+    background-color: #e3f2fd !important;
 }
 .login-card {
     background: #ffffff !important;
