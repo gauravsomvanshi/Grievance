@@ -32,7 +32,7 @@
 }
 
 body {
-    background-color: var(--navy);
+    background-color: transparent;
     background-image: none;
     color: var(--text-main);
     font-family: var(--font-outfit);
