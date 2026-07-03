@@ -3,657 +3,479 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UP Police AI-PGRS | जन शिकायत निवारण प्रणाली</title>
-    <meta name="description" content="Uttar Pradesh Police AI-Based Public Grievance Redressal System - Advanced Jan Sunwai & CCTNS Integration.">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Yatra+One&display=swap" rel="stylesheet">
+    <title>प्रहरी - जनशिकायत निवारण पोर्टल | Public Grievance Redressal Portal</title>
+    <!-- Google Fonts for premium typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for professional icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="app-container">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <div class="brand">
-                <div class="logo-container">
-                    <!-- Custom Police Emblem SVG -->
-                    <svg viewBox="0 0 100 100" class="police-logo">
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--gold)" stroke-width="3" />
-                        <path d="M50,15 L75,35 L70,75 L50,88 L30,75 L25,35 Z" fill="var(--navy-light)" stroke="var(--gold)" stroke-width="2" />
-                        <path d="M50,20 L68,36 L65,70 L50,80 L35,70 L32,36 Z" fill="var(--gold-light)" opacity="0.3"/>
-                        <circle cx="50" cy="45" r="12" fill="var(--gold)"/>
-                        <rect x="47" y="57" width="6" height="15" fill="var(--gold)" rx="2"/>
-                        <polygon points="50,10 54,20 46,20" fill="var(--gold)"/>
-                        <!-- Decorative stars -->
-                        <circle cx="35" cy="25" r="2" fill="white"/>
-                        <circle cx="65" cy="25" r="2" fill="white"/>
-                    </svg>
-                </div>
-                <div class="brand-text">
-                    <span class="hindi-brand">उ०प्र० पुलिस</span>
-                    <span class="eng-brand">UP POLICE</span>
-                    <span class="app-sub">AI Grievance Portal</span>
-                </div>
+    <!-- Top Branding Header -->
+    <header class="main-header">
+        <div class="header-logo">
+            <i class="fa-solid fa-shield-halved logo-icon"></i>
+            <div class="logo-text">
+                <h1>प्रहरी / Prahari</h1>
+                <p>जनशिकायत निवारण पोर्टल | Public Grievance Redressal Portal</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <span class="police-emblem-text">उत्तर प्रदेश पुलिस / Police Department</span>
+            <button id="logout-btn" class="btn btn-logout hidden"><i class="fa-solid fa-right-from-bracket"></i> लॉगआउट / Logout</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- ROLE SELECTOR / LOGIN CONTAINER -->
+        <section id="login-container" class="view-section active">
+            <div class="login-welcome">
+                <h2>पोर्टल में आपका स्वागत है / Welcome to the Portal</h2>
+                <p>कृपया आगे बढ़ने के लिए अपनी भूमिका का चयन करें | Please select your role to proceed.</p>
             </div>
             
-            <nav class="nav-menu">
-                <button class="nav-item active" id="tab-citizen" onclick="switchTab('citizen')">
-                    <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/></svg>
-                    <span>नागरिक डेस्क (Citizen)</span>
-                </button>
-                <button class="nav-item" id="tab-sho" onclick="switchTab('sho')">
-                    <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12,1C7,1 3,5 3,10V17H6V23H18V17H21V10C21,5 17,1 12,1M12,5A3,3 0 0,1 15,8H9A3,3 0 0,1 12,5M16,19H8V17H16V19M19,15H5V10C5,6.13 8.13,3 12,3C15.87,3 19,6.13 19,10V15Z"/></svg>
-                    <span>थानाध्यक्ष (SHO Desk)</span>
-                </button>
-                <button class="nav-item" id="tab-io" onclick="switchTab('io')">
-                    <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2M12 4C13.7 4 15 5.3 15 7C15 8.7 13.7 10 12 10C10.3 10 9 8.7 9 7C9 5.3 10.3 4 12 4M12 20C9.3 20 6.9 18.6 5.6 16.4C5.6 14.3 9.8 13.1 12 13.1C14.2 13.1 18.4 14.3 18.4 16.4C17.1 18.6 14.7 20 12 20Z"/></svg>
-                    <span>जांच अधिकारी (IO Desk)</span>
-                </button>
-                <button class="nav-item" id="tab-sp" onclick="switchTab('sp')">
-                    <svg class="nav-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2A10 10 0 0 0 2 12A10 10 0 0 0 12 22A10 10 0 0 0 22 12A10 10 0 0 0 12 2M12 4A8 8 0 0 1 20 12A8 8 0 0 1 12 20A8 8 0 0 1 4 12A8 8 0 0 1 12 4M11 6V14H13V6H11M11 16V18H13V16H11Z"/></svg>
-                    <span>एसपी डैशबोर्ड (SP Command)</span>
-                </button>
-            </nav>
-            
-            <div style="margin: 1rem 0; width: 100%;">
-                <button class="btn btn-secondary btn-block btn-sm" id="btn-logout" onclick="handleLogout()" style="border-color: rgba(255, 61, 0, 0.25); color: #ff5252; background: rgba(255, 61, 0, 0.05);">
-                    🚪 लॉग आउट (Logout)
+            <div class="role-grid">
+                <!-- Role Card: Citizen -->
+                <div class="role-card" onclick="switchLoginRole('citizen')">
+                    <div class="role-icon-wrapper citizen-color">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3>नागरिक लागिन / Citizen Login</h3>
+                    <p>शिकायत दर्ज करें एवं स्थिति ट्रैक करें / Register & Track Grievance</p>
+                </div>
+
+                <!-- Role Card: SHO -->
+                <div class="role-card" onclick="switchLoginRole('sho')">
+                    <div class="role-icon-wrapper sho-color">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h3>थाना प्रभारी लागिन / SHO Login</h3>
+                    <p>शिकायत प्रबंधन एवं अधिकारी आवंटन / Manage & Assign IO</p>
+                </div>
+
+                <!-- Role Card: IO -->
+                <div class="role-card" onclick="switchLoginRole('io')">
+                    <div class="role-icon-wrapper io-color">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <h3>जाँच अधिकारी लागिन / IO Login</h3>
+                    <p>आवंटित मामलों की जाँच रिपोर्ट दर्ज करें / Submit Investigation Report</p>
+                </div>
+
+                <!-- Role Card: SP -->
+                <div class="role-card" onclick="switchLoginRole('sp')">
+                    <div class="role-icon-wrapper sp-color">
+                        <i class="fa-solid fa-building-shield"></i>
+                    </div>
+                    <h3>पुलिस अधीक्षक लागिन / SP Login</h3>
+                    <p>समस्त थानों का प्रदर्शन डैशबोर्ड / District Analytics Dashboard</p>
+                </div>
+            </div>
+
+            <!-- Login Form Modals/Containers dynamically shown based on role click -->
+            <div id="login-credentials-box" class="login-form-card hidden">
+                <h4 id="login-title">नागरिक लागिन / Citizen Login</h4>
+                <div class="login-inputs">
+                    <div class="input-group" id="citizen-phone-group">
+                        <label for="citizen-phone"><i class="fa-solid fa-phone"></i> मोबाइल नंबर / Mobile Number</label>
+                        <input type="text" id="citizen-phone" placeholder="10 अंकों का नंबर दर्ज करें..." maxlength="10">
+                    </div>
+                    <div class="input-group hidden" id="citizen-otp-group">
+                        <label for="citizen-otp"><i class="fa-solid fa-key"></i> ओ.टी.पी. / OTP (Mock)</label>
+                        <input type="text" id="citizen-otp" placeholder="1234 दर्ज करें..." maxlength="4">
+                    </div>
+                    <div class="input-group hidden" id="official-username-group">
+                        <label for="official-username"><i class="fa-solid fa-user"></i> यूजरनेम / Username</label>
+                        <input type="text" id="official-username" placeholder="यूजरनेम दर्ज करें...">
+                    </div>
+                    <div class="input-group hidden" id="official-password-group">
+                        <label for="official-password"><i class="fa-solid fa-lock"></i> पासवर्ड / Password</label>
+                        <input type="password" id="official-password" placeholder="पासवर्ड दर्ज करें...">
+                    </div>
+                    <div class="login-action-buttons">
+                        <button class="btn btn-secondary" onclick="hideLoginBox()">रद्द करें / Cancel</button>
+                        <button class="btn btn-primary" id="login-action-btn" onclick="handleLogin()">लागिन करें / Login</button>
+                    </div>
+                    <div class="demo-credentials" id="demo-creds-hint"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CITIZEN DASHBOARD -->
+        <section id="citizen-dashboard" class="view-section hidden">
+            <div class="dashboard-banner">
+                <div>
+                    <h2>नागरिक डैशबोर्ड / Citizen Dashboard</h2>
+                    <p class="welcome-user-text">आपका स्वागत है, <span id="citizen-phone-display"></span></p>
+                </div>
+                <button class="btn btn-primary" onclick="showSection('citizen-new-complaint-view')">
+                    <i class="fa-solid fa-plus"></i> नई शिकायत दर्ज करें / File New Complaint
                 </button>
             </div>
 
-            <div class="system-status">
-                <div class="status-indicator online" id="sync-indicator"></div>
-                <div class="status-details">
-                    <span class="status-title" id="sync-status-title">CCTNS Sync Online</span>
-                    <span class="status-time" id="sync-status-desc">SLA Monitor: Active</span>
+            <!-- Complaint List Grid -->
+            <div class="card card-full">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-list-check"></i> आपकी पूर्व शिकायतें / Your Submitted Complaints</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>शिकायत संख्या / Grievance ID</th>
+                                <th>विषय / Subject</th>
+                                <th>थाना / Police Station</th>
+                                <th>दिनांक / Date</th>
+                                <th>वर्तमान स्थिति / Status</th>
+                                <th>कार्रवाई / View Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="citizen-complaint-list">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </aside>
+        </section>
 
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <header class="top-header">
-                <div class="header-title">
-                    <h1 id="main-heading">जन शिकायत निवारण प्रणाली (AI-PGRS)</h1>
-                    <p class="subtitle">UP Police AI Module - Advanced Grievance Routing & Predictive Dashboard</p>
+        <!-- CITIZEN NEW COMPLAINT FORM -->
+        <section id="citizen-new-complaint-view" class="view-section hidden">
+            <div class="back-nav">
+                <button class="btn btn-link" onclick="showSection('citizen-dashboard')"><i class="fa-solid fa-arrow-left"></i> वापस डैशबोर्ड पर जाएँ / Back to Dashboard</button>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-file-pen"></i> नया प्रार्थना पत्र दर्ज करें / File New Complaint</h2>
+                    <p>कृपया सभी विवरण सावधानीपूर्वक भरें / Please fill all details carefully.</p>
                 </div>
-                <div class="live-clock" id="live-clock">Loading Time...</div>
-            </header>
-
-            <!-- CITIZEN VIEW -->
-            <section id="view-citizen" class="content-section active">
-                <div class="citizen-grid">
-                    <!-- Left: File Complaint Card -->
-                    <div class="card form-card">
-                        <div class="card-header">
-                            <span class="badge badge-gold">New Request</span>
-                            <h2>शिकायत दर्ज करें / File Grievance</h2>
-                        </div>
-                        <p class="card-desc">शिकायत हिंदी, अंग्रेजी या हिंग्लिश में दर्ज करें। AI ऑटोमैटिक रूप से इसका विश्लेषण करेगा।</p>
-                        
-                        <form id="grievance-form" onsubmit="handleGrievanceSubmit(event)">
-                            <div class="form-group">
-                                <label for="complaint-text">शिकायत का विवरण (Complaint Details) <span class="required">*</span></label>
-                                <textarea id="complaint-text" required placeholder="उदाहरण: 
-- Mera phone Hazratganj metro station ke paas se chori ho gaya.
-- एक लड़का पिछले 3 दिनों से गोमती नगर पार्क के पास लड़कियों का पीछा कर रहा है।
-- I clicked a link and Rs 20000 was debited from my bank account." rows="6"></textarea>
+                <div class="card-body">
+                    <form id="new-complaint-form" onsubmit="submitComplaint(event)">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="comp-name">शिकायतकर्ता का नाम / Applicant Name <span class="required">*</span></label>
+                                <input type="text" id="comp-name" required placeholder="अपना नाम लिखें...">
                             </div>
-
-                            <div class="form-group">
-                                <label for="citizen-sp-office">एसपी कार्यालय (SP Office) <span class="required">*</span></label>
-                                <select id="citizen-sp-office" required onchange="filterCircleOffices()">
-                                    <option value="">Select SP Office</option>
-                                    <option value="Lucknow SP Office">Lucknow SP Office</option>
-                                    <option value="Kanpur SP Office">Kanpur SP Office</option>
-                                    <option value="Varanasi SP Office">Varanasi SP Office</option>
-                                    <option value="Agra SP Office">Agra SP Office</option>
+                            <div class="input-group">
+                                <label for="comp-phone">मोबाइल नंबर / Mobile Number <span class="required">*</span></label>
+                                <input type="text" id="comp-phone" readonly>
+                            </div>
+                            <div class="input-group">
+                                <label for="comp-aadhaar">आधार नंबर (वैकल्पिक) / Aadhaar No. (Optional)</label>
+                                <input type="text" id="comp-aadhaar" placeholder="12 अंकों का आधार नंबर..." maxlength="12">
+                            </div>
+                            <div class="input-group">
+                                <label for="comp-station">सम्बन्धित थाना / Select Police Station <span class="required">*</span></label>
+                                <select id="comp-station" required>
+                                    <option value="">थाना चुनें / Select Station...</option>
+                                    <option value="Kotwali">कोतवाली / Kotwali</option>
+                                    <option value="Sadar">सदर / Sadar</option>
+                                    <option value="Cantt">कैंट / Cantt</option>
                                 </select>
                             </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="citizen-circle-office">सर्किल कार्यालय (Circle Office) <span class="required">*</span></label>
-                                    <select id="citizen-circle-office" required disabled onchange="filterPoliceStations()">
-                                        <option value="">Select Circle Office</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="citizen-police-station">थाना (Police Station) <span class="required">*</span></label>
-                                    <select id="citizen-police-station" required disabled>
-                                        <option value="">Select Police Station</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-group" style="margin-top: 1rem; margin-bottom: 1.5rem;">
-                                <label for="complaint-image">शिकायत से संबंधित फोटो/आवेदन (Upload Image or Application)</label>
-                                <input type="file" id="complaint-image" accept="image/*" onchange="previewComplaintImage(event)" style="padding: 0.5rem 0.8rem;">
-                                <div id="complaint-image-preview" class="image-preview-box hidden" style="margin-top: 0.8rem; text-align: left;">
-                                    <img id="complaint-image-preview-img" src="" alt="Grievance Preview" style="max-height: 120px; border-radius: 8px; border: 1px solid var(--gold); display: block; margin-bottom: 0.5rem;">
-                                    <button type="button" class="btn btn-secondary btn-sm" onclick="clearComplaintImage()">Remove Image</button>
-                                </div>
-                            </div>
-
-                            <button type="submit" id="btn-submit-grievance" class="btn btn-primary btn-block">
-                                <span class="btn-text">शिकायत सबमिट करें (Process with AI)</span>
-                                <div class="spinner" id="submit-spinner"></div>
-                            </button>
-                        </form>
-
-                        <!-- Processing Timeline Loader (Simulated AI Steps) -->
-                        <div class="ai-processing" id="ai-processing-loader">
-                            <h3>AI Analyzing Grievance...</h3>
-                            <div class="processing-steps">
-                                <div class="step" id="step-lang"><span class="step-dot"></span> Detecting dialect & language...</div>
-                                <div class="step" id="step-cat"><span class="step-dot"></span> Classifying crime type (NLP)...</div>
-                                <div class="step" id="step-loc"><span class="step-dot"></span> Geolocation & station matching...</div>
-                                <div class="step" id="step-urgency"><span class="step-dot"></span> Assessing urgency and SLA timer...</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Column: Submission Output / Ticket Status Tracker -->
-                    <div class="citizen-right">
-                        <!-- Dynamic Result Panel -->
-                        <div class="card result-card" id="submission-result-card">
-                            <div class="card-header border-bottom">
-                                <span class="badge badge-success">Processed Successfully</span>
-                                <h3>AI Analysis Output</h3>
-                            </div>
-                            <div class="result-details">
-                                <div class="result-row highlighted">
-                                    <span class="label">टिकेट आईडी (Ticket ID)</span>
-                                    <span class="value val-ticket" id="res-ticket-id">-</span>
-                                </div>
-                                <div class="result-row">
-                                    <span class="label">दर्ज भाषा (Language)</span>
-                                    <span class="value" id="res-lang">-</span>
-                                </div>
-                                <div class="result-row">
-                                    <span class="label">अपराध श्रेणी (Category)</span>
-                                    <span class="value badge" id="res-category">-</span>
-                                </div>
-                                <div class="result-row">
-                                    <span class="label">आवंटित थाना (Assigned Thana)</span>
-                                    <span class="value" id="res-station">-</span>
-                                </div>
-                                <div class="result-row">
-                                    <span class="label">गंभीरता स्कोर (Urgency Score)</span>
-                                    <span class="value" id="res-urgency">-</span>
-                                </div>
-                                <div class="result-row">
-                                    <span class="label">भाव विश्लेषण (Sentiment)</span>
-                                    <span class="value" id="res-sentiment">-</span>
-                                </div>
-                                <div class="result-row status-highlight">
-                                    <span class="label">वर्तमान स्थिति (Current Status)</span>
-                                    <span class="value" id="res-status">-</span>
-                                </div>
-                            </div>
-                            <div class="result-footer">
-                                <p class="sla-warning">⏰ <strong>SLA Escalation Timer:</strong> If acknowledgment is not logged by the SHO within 1 minute, the case will automatically escalate to the SP Dashboard.</p>
-                            </div>
-                        </div>
-
-                        <!-- Ticket Search Tracker -->
-                        <div class="card tracker-card">
-                            <div class="card-header">
-                                <h2>शिकायत की स्थिति देखें / Track Status</h2>
-                            </div>
-                            <div class="search-box">
-                                <input type="text" id="track-ticket-id" placeholder="Enter Ticket ID (e.g. TKT-20260701-0001)">
-                                <button type="button" class="btn btn-secondary" onclick="trackGrievance()">Track</button>
-                            </div>
-                            
-                            <div class="track-timeline" id="track-timeline-container">
-                                <!-- Dynamically loaded actions timeline -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SHO WORKSTATION VIEW -->
-            <section id="view-sho" class="content-section">
-                <div class="sho-header-bar">
-                    <div class="card sho-selector-card">
-                        <label for="sho-station-select"><strong>कार्यरत थाना चुनें (Select Police Station Workspace):</strong></label>
-                        <select id="sho-station-select" onchange="loadSHOGrievances()">
-                            <!-- Seeded stations loaded dynamically -->
-                        </select>
-                    </div>
-                </div>
-
-                <div class="card table-card">
-                    <div class="card-header flex-between">
-                        <h2>थाने के मामले / Assigned Grievances</h2>
-                        <span class="table-info" id="sho-cases-count">0 Cases Found</span>
-                    </div>
-                    
-                    <div class="table-wrapper">
-                        <table class="grid-table">
-                            <thead>
-                                <tr>
-                                    <th>Ticket ID</th>
-                                    <th>Grievance Text</th>
-                                    <th>Category</th>
-                                    <th>Urgency</th>
-                                    <th>SLA Remaining / Escalation Status</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="sho-table-body">
-                                <!-- Dynamic rows -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Action Log Modal / Drawer (Inline Form below table) -->
-                <div id="sho-action-drawer" class="card action-drawer-card hidden">
-                    <div class="card-header flex-between border-bottom">
-                        <h3>मामले पर कार्रवाई दर्ज करें | Log Action for <span id="action-tkt-display"></span></h3>
-                        <button class="btn btn-close" onclick="closeSHODrawer()">✕</button>
-                    </div>
-                    <form onsubmit="submitSHOAction(event)" class="drawer-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="action-sho-name">अधिकारी का नाम (Officer Name) <span class="required">*</span></label>
-                                <input type="text" id="action-sho-name" required placeholder="e.g. Inspector Akhilesh Singh">
-                            </div>
-                            <div class="form-group">
-                                <label for="action-allot-io">जांच अधिकारी नियुक्त करें (Allot Investigating Officer)</label>
-                                <select id="action-allot-io">
-                                    <option value="">-- Keep Current / No Allotment --</option>
-                                    <option value="SI Ramesh Kumar">SI Ramesh Kumar</option>
-                                    <option value="SI Amit Singh">SI Amit Singh</option>
-                                    <option value="SI Vineet Yadav">SI Vineet Yadav</option>
-                                    <option value="SI Sanjay Yadav">SI Sanjay Yadav</option>
-                                    <option value="SI Rajesh Kumar">SI Rajesh Kumar</option>
-                                    <option value="SI Vinay Verma">SI Vinay Verma</option>
+                            <div class="input-group">
+                                <label for="comp-category">शिकायत श्रेणी / Complaint Category <span class="required">*</span></label>
+                                <select id="comp-category" required>
+                                    <option value="">श्रेणी चुनें / Select Category...</option>
+                                    <option value="चोरी / Theft">चोरी / Theft</option>
+                                    <option value="भूमि विवाद / Land Dispute">भूमि विवाद / Land Dispute</option>
+                                    <option value="धोखाधड़ी / Cyber Fraud">साइबर धोखाधड़ी / Cyber Fraud</option>
+                                    <option value="घरेलू हिंसा / Domestic Violence">घरेलू हिंसा / Domestic Violence</option>
+                                    <option value="अन्य / Other">अन्य / Other</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="action-status-select">स्थिति बदलें (Update Status) <span class="required">*</span></label>
-                                <select id="action-status-select" onchange="checkIOAllotmentStatus()">
-                                    <option value="Pending">Pending</option>
-                                    <option value="Under Investigation">Under Investigation</option>
-                                    <option value="Resolved">Resolved</option>
-                                </select>
+                            <div class="input-group md-span-2">
+                                <label for="comp-subject">शिकायत का विषय / Grievance Subject <span class="required">*</span></label>
+                                <input type="text" id="comp-subject" required placeholder="संक्षिप्त विषय लिखें...">
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="action-message">की गई कार्रवाई का विवरण (Action Details / Investigation Diary) <span class="required">*</span></label>
-                            <textarea id="action-message" required placeholder="दर्ज करें कि इस मामले में क्या कार्रवाई की जा रही है... (जैसे: गश्त दल भेजा गया, FIR दर्ज की गई, आदि)" rows="3"></textarea>
+                            <div class="input-group md-span-2">
+                                <label for="comp-description">शिकायत का विस्तृत विवरण / Detailed Description <span class="required">*</span></label>
+                                <textarea id="comp-description" rows="5" required placeholder="शिकायत का पूर्ण विवरण लिखें..."></textarea>
+                            </div>
                         </div>
                         <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="closeSHODrawer()">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Action & Update status</button>
+                            <button type="button" class="btn btn-secondary" onclick="showSection('citizen-dashboard')">रद्द करें / Cancel</button>
+                            <button type="submit" class="btn btn-primary">शिकायत दर्ज करें / Submit Grievance</button>
                         </div>
                     </form>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- SP DASHBOARD VIEW -->
-            <section id="view-sp" class="content-section">
-                <!-- SP Filtering Header -->
-                <div class="sp-filters card">
-                    <div class="form-row flex-align-center">
-                        <div class="form-group">
-                            <label for="sp-district-select"><strong>District Commander View (जिला):</strong></label>
-                            <select id="sp-district-select" onchange="loadSPDashboard()">
-                                <option value="Lucknow">Lucknow (Lucknow Range)</option>
-                                <option value="Kanpur">Kanpur (Kanpur Outer/Inner)</option>
-                                <option value="Varanasi">Varanasi (Varanasi Range)</option>
-                                <option value="Agra">Agra (Agra Range)</option>
-                            </select>
-                        </div>
-                        <div class="spam-toggle-container">
-                            <label class="switch">
-                                <input type="checkbox" id="sp-spam-toggle" onchange="loadSPDashboard()">
-                                <span class="slider round"></span>
-                            </label>
-                            <span class="toggle-label">संभावित स्पैम/फेक दिखाएं (Show Potential Spam/Fake Only)</span>
-                        </div>
+        <!-- SHO DASHBOARD -->
+        <section id="sho-dashboard" class="view-section hidden">
+            <div class="dashboard-banner">
+                <div>
+                    <h2>थाना प्रभारी डैशबोर्ड / SHO Dashboard</h2>
+                    <p class="welcome-user-text">थाना: <span id="sho-station-display">कोतवाली / Kotwali</span></p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="exportReports('SHO')"><i class="fa-solid fa-file-excel"></i> रिपोर्ट डाउनलोड करें / Export Report</button>
+                </div>
+            </div>
+
+            <!-- Stats Counters -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>कुल शिकायतें / Total Cases</h4>
+                    <span class="stat-number" id="sho-stat-total">0</span>
+                </div>
+                <div class="stat-card border-pending">
+                    <h4>लंबित / Pending</h4>
+                    <span class="stat-number text-pending" id="sho-stat-pending">0</span>
+                </div>
+                <div class="stat-card border-assigned">
+                    <h4>जाँच जारी / Under Investigation</h4>
+                    <span class="stat-number text-assigned" id="sho-stat-investigating">0</span>
+                </div>
+                <div class="stat-card border-resolved">
+                    <h4>निस्तारित / Resolved</h4>
+                    <span class="stat-number text-resolved" id="sho-stat-resolved">0</span>
+                </div>
+            </div>
+
+            <!-- Complaint Management Table -->
+            <div class="card card-full">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-list-check"></i> शिकायतें नियंत्रण कक्ष / Complaint Control Room</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>शिकायत संख्या / Grievance ID</th>
+                                <th>शिकायतकर्ता / Applicant</th>
+                                <th>श्रेणी / Category</th>
+                                <th>दिनांक / Date</th>
+                                <th>जाँच अधिकारी / Assignee</th>
+                                <th>स्थिति / Status</th>
+                                <th>कार्रवाई / Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sho-complaint-list">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- IO DASHBOARD -->
+        <section id="io-dashboard" class="view-section hidden">
+            <div class="dashboard-banner">
+                <div>
+                    <h2>जाँच अधिकारी डैशबोर्ड / IO Dashboard</h2>
+                    <p class="welcome-user-text">अधिकारी: <span id="io-name-display"></span></p>
+                </div>
+            </div>
+
+            <!-- Stats Counters -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>आवंटित मामले / Assigned Cases</h4>
+                    <span class="stat-number" id="io-stat-total">0</span>
+                </div>
+                <div class="stat-card border-assigned">
+                    <h4>जाँच के अधीन / Under Inquiry</h4>
+                    <span class="stat-number text-assigned" id="io-stat-pending">0</span>
+                </div>
+                <div class="stat-card border-resolved">
+                    <h4>निस्तारित / Disposed</h4>
+                    <span class="stat-number text-resolved" id="io-stat-resolved">0</span>
+                </div>
+            </div>
+
+            <!-- Assigned Complaints Table -->
+            <div class="card card-full">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-folder-open"></i> आवंटित जाँच मामले / Assigned Grievance Cases</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>संख्या / Grievance ID</th>
+                                <th>शिकायतकर्ता / Applicant</th>
+                                <th>श्रेणी / Category</th>
+                                <th>विषय / Subject</th>
+                                <th>दिनांक / Date</th>
+                                <th>स्थिति / Status</th>
+                                <th>जाँच दर्ज करें / Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="io-complaint-list">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SP DASHBOARD -->
+        <section id="sp-dashboard" class="view-section hidden">
+            <div class="dashboard-banner">
+                <div>
+                    <h2>पुलिस अधीक्षक डैशबोर्ड / SP Dashboard</h2>
+                    <p class="welcome-user-text">जनपद: <span id="sp-district-display">गोरखपुर / Gorakhpur</span></p>
+                </div>
+                <button class="btn btn-secondary" onclick="exportReports('SP')"><i class="fa-solid fa-file-pdf"></i> जिला रिपोर्ट डाउनलोड / Download District Report</button>
+            </div>
+
+            <!-- District High-level stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>जनपद में कुल मामले / District Total</h4>
+                    <span class="stat-number" id="sp-stat-total">0</span>
+                </div>
+                <div class="stat-card border-pending">
+                    <h4>कुल लंबित / Total Pending</h4>
+                    <span class="stat-number text-pending" id="sp-stat-pending">0</span>
+                </div>
+                <div class="stat-card border-resolved">
+                    <h4>कुल निस्तारित / Total Resolved</h4>
+                    <span class="stat-number text-resolved" id="sp-stat-resolved">0</span>
+                </div>
+                <div class="stat-card border-success">
+                    <h4>कुल निस्तारण दर / Resolution Rate</h4>
+                    <span class="stat-number text-resolved" id="sp-stat-rate">0%</span>
+                </div>
+            </div>
+
+            <!-- Station Performance Dashboard -->
+            <div class="station-dashboard-container">
+                <div class="card card-half">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-chart-bar"></i> थानावार निस्तारण रिपोर्ट / Station Resolution Analytics</h3>
+                    </div>
+                    <div class="card-body" id="sp-station-analytics-container">
+                        <!-- Station progress bars populated dynamically -->
                     </div>
                 </div>
 
-                <!-- KPI Cards Grid -->
-                <div class="kpi-grid">
-                    <div class="kpi-card card border-left-blue">
-                        <span class="kpi-label">कुल शिकायतें (Total Complaints)</span>
-                        <h3 class="kpi-val" id="kpi-total">0</h3>
+                <div class="card card-half">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-triangle-exclamation"></i> लंबित अति-संवेदनशील मामले / Overdue & Pending Cases</h3>
                     </div>
-                    <div class="kpi-card card border-left-orange">
-                        <span class="kpi-label">लंबित शिकायतें (Unacknowledged / Pending)</span>
-                        <h3 class="kpi-val text-orange" id="kpi-pending">0</h3>
-                    </div>
-                    <div class="kpi-card card border-left-green">
-                        <span class="kpi-label">जांच के अधीन (Under Investigation)</span>
-                        <h3 class="kpi-val text-green" id="kpi-active">0</h3>
-                    </div>
-                    <div class="kpi-card card border-left-gold">
-                        <span class="kpi-label">निस्तारित (Resolved Cases)</span>
-                        <h3 class="kpi-val text-gold" id="kpi-resolved">0</h3>
-                    </div>
-                    <div class="kpi-card card border-left-red alert-glowing">
-                        <span class="kpi-label">SLA उल्लंघन (Escalations/Breaches)</span>
-                        <h3 class="kpi-val text-red" id="kpi-escalated">0</h3>
-                    </div>
-                </div>
-
-                <!-- Police Station Level Status Table (SP View) -->
-                <div class="card table-card" style="margin-bottom: 2rem; margin-top: 1rem;">
-                    <div class="card-header border-bottom">
-                        <h2>थानावार समीक्षा | Police Station Level Overview</h2>
-                    </div>
-                    <div class="table-wrapper">
-                        <table class="grid-table">
+                    <div class="table-responsive">
+                        <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Thana / Police Station</th>
-                                    <th>Officer in Charge (SHO)</th>
-                                    <th>Status Details</th>
-                                    <th style="text-align:center;">Total Cases</th>
-                                    <th style="text-align:center; color:var(--accent-orange);">Pending</th>
-                                    <th style="text-align:center; color:var(--accent-blue);">Active</th>
-                                    <th style="text-align:center; color:var(--accent-green);">Resolved</th>
-                                    <th style="text-align:center; color:var(--accent-red);">SLA Breached</th>
+                                    <th>संख्या / ID</th>
+                                    <th>थाना / Station</th>
+                                    <th>श्रेणी / Category</th>
+                                    <th>विलम्ब / Pending Since</th>
+                                    <th>स्थिति / Status</th>
                                 </tr>
                             </thead>
-                            <tbody id="sp-ps-table-body">
-                                <!-- Dynamic Police Station rows loaded here -->
+                            <tbody id="sp-pending-complaints-list">
+                                <!-- Populated dynamically -->
                             </tbody>
                         </table>
                     </div>
                 </div>
-
-
-                <!-- Main Analytics Section (Map + Category Statistics) -->
-                <div class="analytics-grid">
-                    <!-- Left: Interactive Crime Hotmap SVG (Simulated) -->
-                    <div class="card map-card">
-                        <div class="card-header">
-                            <h2>ज़िला अपराध हीटमैप | District Crime Hotspots (Real-time AI Overlay)</h2>
-                        </div>
-                        <p class="card-desc">सर्कल का साइज और रंग उस थाने में दर्ज कुल शिकायतों की संख्या को दर्शाता है।</p>
-                        
-                        <div class="map-wrapper">
-                            <!-- Custom SVG District Map Overlay -->
-                            <svg viewBox="0 0 500 500" class="district-svg" id="district-svg-map">
-                                <defs>
-                                    <radialGradient id="glow-red" cx="50%" cy="50%" r="50%">
-                                        <stop offset="0%" stop-color="#ff4757" stop-opacity="0.8"/>
-                                        <stop offset="100%" stop-color="#ff4757" stop-opacity="0"/>
-                                    </radialGradient>
-                                    <radialGradient id="glow-orange" cx="50%" cy="50%" r="50%">
-                                        <stop offset="0%" stop-color="#ffa502" stop-opacity="0.8"/>
-                                        <stop offset="100%" stop-color="#ffa502" stop-opacity="0"/>
-                                    </radialGradient>
-                                    <radialGradient id="glow-green" cx="50%" cy="50%" r="50%">
-                                        <stop offset="0%" stop-color="#2ed573" stop-opacity="0.8"/>
-                                        <stop offset="100%" stop-color="#2ed573" stop-opacity="0"/>
-                                    </radialGradient>
-                                </defs>
-                                
-                                <!-- Background Simulated Boundaries -->
-                                <path d="M 50,50 L 250,30 L 450,80 L 480,250 L 400,450 L 150,470 L 30,300 Z" fill="rgba(10, 25, 47, 0.6)" stroke="var(--navy-light)" stroke-width="3" />
-                                
-                                <path d="M 50,50 L 180,180 L 250,30" fill="none" stroke="var(--navy-light)" stroke-width="1.5" stroke-dasharray="5,5"/>
-                                <path d="M 180,180 L 150,470" fill="none" stroke="var(--navy-light)" stroke-width="1.5" stroke-dasharray="5,5"/>
-                                <path d="M 180,180 L 400,450" fill="none" stroke="var(--navy-light)" stroke-width="1.5" stroke-dasharray="5,5"/>
-                                <path d="M 180,180 L 480,250" fill="none" stroke="var(--navy-light)" stroke-width="1.5" stroke-dasharray="5,5"/>
-                                
-                                <!-- Police Stations Hotspot circles are injected dynamically via JavaScript -->
-                                <g id="map-stations-group"></g>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <!-- Right Column: Escalation Alerts Feed + Category Chart -->
-                    <div class="analytics-right">
-                        <!-- Category chart using pure HTML/CSS bars -->
-                        <div class="card chart-card">
-                            <div class="card-header">
-                                <h2>श्रेणीवार वितरण | Category Breakdown</h2>
-                            </div>
-                            <div class="bar-chart-container" id="category-chart-container">
-                                <!-- Dynamic bar rows -->
-                            </div>
-                        </div>
-
-                        <!-- High Priority Escalation Alerts Feed -->
-                        <div class="card alert-feed-card">
-                            <div class="card-header">
-                                <span class="alert-pulse-dot"></span>
-                                <h2>त्वरित कार्रवाई अलर्ट | Critical SP Alerts</h2>
-                            </div>
-                            <div class="alert-list-wrapper" id="sp-alerts-list">
-                                <!-- Dynamic escalation cards -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- IO WORKSTATION VIEW -->
-            <section id="view-io" class="content-section">
-                <div class="io-header-bar card" style="margin-bottom: 2rem;">
-                    <div class="flex-between">
-                        <div>
-                            <h2 style="color:var(--gold);">जांच अधिकारी वर्कस्टेशन | Investigating Officer Desk</h2>
-                            <p class="subtitle" id="io-officer-info">Logged in as: -</p>
-                        </div>
-                        <span class="badge badge-gold" id="io-cases-count">0 Assigned Case(s)</span>
-                    </div>
-                </div>
-
-                <div class="io-main-grid" style="display:grid; grid-template-columns: 1fr 1.2fr; gap: 2rem;">
-                    <!-- Left: Allotted Cases List -->
-                    <div class="card list-card" style="padding: 1.2rem;">
-                        <h3 style="margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem;">आबंटित शिकायतें | Allotted Cases</h3>
-                        <div id="io-cases-list" style="display:flex; flex-direction:column; gap:1rem; max-height: 500px; overflow-y: auto;">
-                            <!-- Dynamic IO case cards -->
-                            <p style="color:var(--text-muted); text-align:center; padding: 2rem 0;">No cases assigned yet.</p>
-                        </div>
-                    </div>
-
-                    <!-- Right: Selected Case Details & Action -->
-                    <div class="card detail-card" id="io-detail-panel">
-                        <div style="text-align:center; padding: 5rem 0; color:var(--text-muted);" id="io-detail-placeholder">
-                            <span>🔍 Select a case from the list to view details, download grievance, and submit report</span>
-                        </div>
-                        <div id="io-detail-content" class="hidden">
-                            <div class="flex-between border-bottom" style="padding-bottom:0.8rem;">
-                                <div>
-                                    <span class="badge badge-gold" id="io-detail-tkt">-</span>
-                                    <h2 id="io-detail-category" style="margin-top:0.4rem; font-size:1.4rem;">-</h2>
-                                </div>
-                                <span class="badge" id="io-detail-status">-</span>
-                            </div>
-                            
-                            <div class="io-detail-section" style="margin-bottom:1.5rem;">
-                                <h4 style="color:var(--text-muted); margin-bottom:0.4rem; font-size:0.8rem; text-transform:uppercase;">Complaint Statement</h4>
-                                <p id="io-detail-text" style="font-size:0.95rem; line-height:1.5; white-space:pre-wrap; background:rgba(0,0,0,0.2); padding:1rem; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">-</p>
-                            </div>
-                            
-                            <div class="io-detail-section" style="margin-bottom:1.5rem;" id="io-detail-image-sec">
-                                <h4 style="color:var(--text-muted); margin-bottom:0.4rem; font-size:0.8rem; text-transform:uppercase;">Complainant Attachment</h4>
-                                <img id="io-detail-image" src="" alt="Complainant upload" style="max-width:100%; max-height:220px; border-radius:8px; border:1px solid var(--glass-border); display: block; margin-top: 0.5rem;">
-                            </div>
-
-                            <div class="io-detail-section border-bottom" style="padding-bottom:1.2rem; display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-                                <div>
-                                    <span style="font-size:0.8rem; color:var(--text-muted); display:block;">SP Office</span>
-                                    <strong id="io-detail-sp">-</strong>
-                                </div>
-                                <div>
-                                    <span style="font-size:0.8rem; color:var(--text-muted); display:block;">Circle Office</span>
-                                    <strong id="io-detail-circle">-</strong>
-                                </div>
-                                <div>
-                                    <span style="font-size:0.8rem; color:var(--text-muted); display:block;">Police Station</span>
-                                    <strong id="io-detail-station">-</strong>
-                                </div>
-                                <div>
-                                    <span style="font-size:0.8rem; color:var(--text-muted); display:block;">Date Filed</span>
-                                    <strong id="io-detail-date">-</strong>
-                                </div>
-                            </div>
-
-                            <!-- Official Download Button -->
-                            <div style="margin: 1.5rem 0;">
-                                <button type="button" class="btn btn-secondary btn-block" onclick="downloadGrievanceDocument()">
-                                    <span>📥 Download Official Grievance Application (TXT)</span>
-                                </button>
-                            </div>
-
-                            <!-- Investigation Filing Form -->
-                            <form id="io-report-form" onsubmit="submitIOInvestigationReport(event)" style="border-top:1px dashed var(--glass-border); padding-top:1.5rem;">
-                                <h3 style="color:var(--gold); margin-bottom:1rem;">📝 File Investigation Report</h3>
-                                
-                                <div class="form-group">
-                                    <label for="io-report-text">जांच रिपोर्ट का विवरण (Investigation Report Details) <span class="required">*</span></label>
-                                    <textarea id="io-report-text" required placeholder="Enter your detailed investigation log, findings, actions taken, and final outcome..." rows="5"></textarea>
-                                </div>
-
-                                <div class="form-row" style="margin-bottom:1.2rem;">
-                                    <div class="form-group">
-                                        <label for="io-report-status">स्थिति बदलें (Update Status) <span class="required">*</span></label>
-                                        <select id="io-report-status" required>
-                                            <option value="Under Investigation">Under Investigation</option>
-                                            <option value="Resolved">Resolved</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="io-report-image">जांच स्थल / साक्ष्य फोटो (Investigation / Evidence Photos)</label>
-                                    <input type="file" id="io-report-image" accept="image/*" onchange="previewIOEvidenceImage(event)">
-                                    <div id="io-report-image-preview" class="image-preview-box hidden" style="margin-top: 0.8rem; text-align: left;">
-                                        <img id="io-report-image-preview-img" src="" alt="Evidence Preview" style="max-height: 120px; border-radius: 6px; border: 1px solid var(--accent-blue); display: block; margin-bottom: 0.5rem;">
-                                        <button type="button" class="btn btn-secondary btn-sm" onclick="clearIOEvidenceImage()">Remove Photo</button>
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="btn btn-primary btn-block" style="margin-top:1.5rem;">
-                                    <span>जांच रिपोर्ट सबमिट करें | Submit Investigation Report</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Fullscreen Login Overlay -->
-    <div id="login-overlay" class="login-overlay">
-        <div class="login-card">
-            <div class="login-brand">
-                <div class="logo-container" style="width: 70px; height: 70px; margin: 0 auto 1.2rem auto;">
-                    <svg viewBox="0 0 100 100" class="police-logo">
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--gold)" stroke-width="3" />
-                        <path d="M50,15 L75,35 L70,75 L50,88 L30,75 L25,35 Z" fill="var(--navy-light)" stroke="var(--gold)" stroke-width="2" />
-                        <path d="M50,20 L68,36 L65,70 L50,80 L35,70 L32,36 Z" fill="var(--gold-light)" opacity="0.3"/>
-                        <circle cx="50" cy="45" r="12" fill="var(--gold)"/>
-                        <rect x="47" y="57" width="6" height="15" fill="var(--gold)" rx="2"/>
-                        <polygon points="50,10 54,20 46,20" fill="var(--gold)"/>
-                    </svg>
-                </div>
-                <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--gold); font-family: var(--font-outfit);">उ०प्र० पुलिस</h1>
-                <h2 style="font-size: 1.2rem; font-weight: 600; color: var(--white); margin-top: 0.2rem;">AI जन शिकायत पोर्टल (AI-PGRS)</h2>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.1rem;">Bilingual Grievance Redressal & Control Portal</p>
             </div>
+        </section>
 
-            <div class="login-role-selector" id="login-role-selector" style="display: flex; gap: 0.5rem; justify-content: center; margin: 1.5rem 0;">
-                <button type="button" class="btn role-btn active" id="role-btn-citizen" onclick="selectLoginRole('citizen')">Public</button>
-                <button type="button" class="btn role-btn" id="role-btn-sho" onclick="selectLoginRole('sho')">SHO</button>
-                <button type="button" class="btn role-btn" id="role-btn-io" onclick="selectLoginRole('io')">IO</button>
-                <button type="button" class="btn role-btn" id="role-btn-sp" onclick="selectLoginRole('sp')">SP</button>
-            </div>
-            
-            <!-- Sign In Form -->
-            <form id="login-form" onsubmit="handleLoginSubmit(event)" style="text-align: left; margin-top: 1rem;">
-                <div id="login-fields-container">
-                    <!-- Loaded dynamically in app.js -->
+        <!-- VIEW DETAILS & ASSIGNMENT/REPORT MODAL -->
+        <div id="details-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">शिकायत का विवरण / Complaint Details</h3>
+                    <span class="close-modal" onclick="closeModal()">&times;</span>
                 </div>
-                <div class="form-group">
-                    <label for="login-password">पासवर्ड (Password) <span class="required" id="login-pass-req">*</span></label>
-                    <input type="password" id="login-password" placeholder="Enter Password" required>
-                </div>
-                
-                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
-                    <span>लॉग इन करें | Sign In</span>
-                </button>
+                <div class="modal-body">
+                    <div class="complaint-details-box">
+                        <div class="detail-row">
+                            <strong>शिकायत संख्या / Grievance ID:</strong>
+                            <span id="modal-id"></span>
+                        </div>
+                        <div class="detail-row">
+                            <strong>शिकायतकर्ता / Applicant Name:</strong>
+                            <span id="modal-name"></span>
+                        </div>
+                        <div class="detail-row">
+                            <strong>मोबाइल / Phone:</strong>
+                            <span id="modal-phone"></span>
+                        </div>
+                        <div class="detail-row">
+                            <strong>आधार / Aadhaar:</strong>
+                            <span id="modal-aadhaar"></span>
+                        </div>
+                        <div class="detail-row">
+                            <strong>थाना / Police Station:</strong>
+                            <span id="modal-station"></span>
+                        </div>
+                        <div class="detail-row">
+                            <strong>दिनांक / Date:</strong>
+                            <span id="modal-date"></span>
+                        </div>
+                        <div class="detail-row">
+                            <strong>श्रेणी / Category:</strong>
+                            <span id="modal-category"></span>
+                        </div>
+                        <div class="detail-row">
+                            <strong>विषय / Subject:</strong>
+                            <span id="modal-subject"></span>
+                        </div>
+                        <div class="detail-description">
+                            <strong>विवरण / Detailed Description:</strong>
+                            <p id="modal-desc"></p>
+                        </div>
+                    </div>
 
-                <div style="text-align: center; margin-top: 1.2rem; font-size: 0.85rem;">
-                    <span style="color: var(--text-muted);">Don't have an account? </span>
-                    <a href="#" onclick="toggleLoginView('signup')" style="color: var(--gold); font-weight: 600; text-decoration: none; border-bottom: 1px dashed var(--gold); padding-bottom: 1px;">Sign Up</a>
-                </div>
-            </form>
+                    <!-- SHO Section: Assign IO -->
+                    <div id="modal-sho-action-box" class="modal-action-box hidden">
+                        <h4><i class="fa-solid fa-user-plus"></i> जाँच अधिकारी आवंटित करें / Assign Investigating Officer</h4>
+                        <div class="input-group">
+                            <label for="select-io-assign">जाँच अधिकारी चुनें / Select IO</label>
+                            <select id="select-io-assign">
+                                <!-- Populated dynamically based on station -->
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="assignIO()">अधिकारी आवंटित करें / Confirm Assignment</button>
+                    </div>
 
-            <!-- Sign Up Form -->
-            <form id="signup-form" onsubmit="handleSignupSubmit(event)" style="text-align: left; margin-top: 1rem; display: none;">
-                <div class="form-group">
-                    <label for="signup-username">यूज़रनेम (Username) <span class="required">*</span></label>
-                    <input type="text" id="signup-username" required placeholder="Choose a unique username">
-                </div>
-                <div class="form-group">
-                    <label for="signup-fullname">पूरा नाम (Full Name) <span class="required">*</span></label>
-                    <input type="text" id="signup-fullname" required placeholder="Enter your full name">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="signup-phone">मोबाइल नंबर (Phone Number) <span class="required">*</span></label>
-                        <input type="tel" id="signup-phone" required placeholder="10-digit number" pattern="[0-9]{10}">
+                    <!-- IO Section: Report Submission -->
+                    <div id="modal-io-action-box" class="modal-action-box hidden">
+                        <h4><i class="fa-solid fa-file-shield"></i> जाँच रिपोर्ट दर्ज करें / Update Status & File Investigation Report</h4>
+                        <div class="input-group">
+                            <label for="select-status-update">जाँच की स्थिति / Investigation Status</label>
+                            <select id="select-status-update">
+                                <option value="Under Investigation">जाँच जारी / Under Investigation</option>
+                                <option value="Resolved">निस्तारित / Resolved</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="investigation-report-text">जाँच रिपोर्ट का विवरण / Detailed Investigation Report</label>
+                            <textarea id="investigation-report-text" rows="4" placeholder="जाँच का निष्कर्ष यहाँ लिखें..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="submitInvestigationReport()">रिपोर्ट जमा करें / Submit Report</button>
                     </div>
-                    <div class="form-group">
-                        <label for="signup-aadhaar">आधार नंबर (Aadhaar Number) <span class="required">*</span></label>
-                        <input type="text" id="signup-aadhaar" required placeholder="12-digit number" pattern="[0-9]{12}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="signup-email">ईमेल पता (Email Address)</label>
-                    <input type="email" id="signup-email" placeholder="example@gmail.com (optional)">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="signup-password">पासवर्ड (Password) <span class="required">*</span></label>
-                        <input type="password" id="signup-password" required placeholder="Create password">
-                    </div>
-                    <div class="form-group">
-                        <label for="signup-confirm-password">पासवर्ड की पुष्टि करें (Confirm Password) <span class="required">*</span></label>
-                        <input type="password" id="signup-confirm-password" required placeholder="Confirm password">
-                    </div>
-                </div>
-                
-                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
-                    <span>पंजीकरण करें | Register Account</span>
-                </button>
-                
-                <div style="text-align: center; margin-top: 1.2rem; font-size: 0.85rem;">
-                    <span style="color: var(--text-muted);">Already have an account? </span>
-                    <a href="#" onclick="toggleLoginView('login')" style="color: var(--gold); font-weight: 600; text-decoration: none; border-bottom: 1px dashed var(--gold); padding-bottom: 1px;">Sign In</a>
-                </div>
-            </form>
 
-            <div class="demo-login-helper" id="demo-login-helper" style="margin-top: 2rem; border-top: 1px dashed var(--glass-border); padding-top: 1rem; text-align: center;">
-                <span style="font-size: 0.75rem; color: var(--gold); display: block; margin-bottom: 0.5rem; font-weight: 600;">⚡ DEMO BYPASS / QUICK LOGIN LINKS:</span>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-                    <button class="btn btn-secondary btn-sm" onclick="quickLogin('citizen', 'citizen1')">Test Citizen (citizen1)</button>
-                    <button class="btn btn-secondary btn-sm" onclick="quickLogin('sho', 'Hazratganj')">Hazratganj SHO</button>
-                    <button class="btn btn-secondary btn-sm" onclick="quickLogin('io', 'SI Ramesh Kumar')">SI Ramesh Kumar (IO)</button>
-                    <button class="btn btn-secondary btn-sm" onclick="quickLogin('sp', 'Lucknow')">Lucknow SP</button>
+                    <!-- Citizen & SP Section: Show Investigation Status -->
+                    <div id="modal-investigation-report-box" class="modal-action-box hidden">
+                        <h4><i class="fa-solid fa-clipboard-check"></i> जाँच रिपोर्ट / Investigation Progress Details</h4>
+                        <div class="detail-row">
+                            <strong>जाँच अधिकारी / Officer in Charge:</strong>
+                            <span id="modal-report-officer"></span>
+                        </div>
+                        <div class="detail-row">
+                            <strong>अपडेट की तिथि / Update Date:</strong>
+                            <span id="modal-report-date">N/A</span>
+                        </div>
+                        <div class="detail-description">
+                            <strong>जाँच रिपोर्ट / Investigation Report:</strong>
+                            <p id="modal-report-text" class="investigation-report-content"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Script connection -->
+    <footer class="main-footer">
+        <p>&copy; 2026 जनशिकायत निवारण प्रणाली | Prahari Redressal Cell. सर्वाधिकार सुरक्षित | All Rights Reserved.</p>
+    </footer>
+
     <script src="app.js"></script>
 </body>
 </html>
